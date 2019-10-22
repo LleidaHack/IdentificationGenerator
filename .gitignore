@@ -1,7 +1,7 @@
 #custom
 resources/2019_firebase_cert.json
 resources/data.json
-!_out_/
+!_out_/.keep
 _out_/**
 # Byte-compiled / optimized / DLL files
 __pycache__/
