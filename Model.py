@@ -43,14 +43,36 @@ class Assistant(object):
 		return []
 
 
-class Empresa(Assistant):
-	ID = 1
-	TYPE = ''
+class Guest(Assistant):
+	__ID = 1
+	__TYPE = 'INVITADO'
+	__DATA = 'guests'
+
+	def __init__(self, name):
+		super().__init__('G' + str(Guest.__ID), Guest.__TYPE, name)
+		Guest.__ID += 1
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		super().generate_card(rgb_back)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS)
+
+	@staticmethod
+	def get_data():
+		res = []
+		data = Tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
+		for u in data[Guest.__DATA]:
+			res.append(Guest(u['name']))
+		return res
+
+
+class Company(Assistant):
+	__ID = 1
+	__TYPE = ''
 	__DATA = 'companies'
 
 	def __init__(self, name):
-		super().__init__('E' + str(Empresa.ID), Empresa.TYPE, name)
-		Empresa.ID += 1
+		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
+		Company.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
@@ -59,21 +81,21 @@ class Empresa(Assistant):
 	@staticmethod
 	def get_data():
 		res = []
-		data = Tools.DataFile.get_content(Empresa._DATA_FILE, 'JSON')
-		for u in data[Empresa.__DATA]:
+		data = Tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
+		for u in data[Company.__DATA]:
 			for i in range(u['number_of_cards']):
-				res.append(Empresa(u['name']))
+				res.append(Company(u['name']))
 		return res
 
 
-class Voluntari(Assistant):
-	ID = 1
-	TYPE = 'VOLUNTARIADO'
+class Volunteer(Assistant):
+	__ID = 1
+	__TYPE = 'VOLUNTARIADO'
 	__DATA = 'volunteers'
 
 	def __init__(self, name):
-		super().__init__('V' + str(Voluntari.ID), Voluntari.TYPE, name)
-		Voluntari.ID += 1
+		super().__init__('V' + str(Volunteer.__ID), Volunteer.__TYPE, name)
+		Volunteer.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
@@ -82,20 +104,20 @@ class Voluntari(Assistant):
 	@staticmethod
 	def get_data():
 		res = []
-		data = Tools.DataFile.get_content(Voluntari._DATA_FILE, 'JSON')
-		for u in data[Voluntari.__DATA]:
-			res.append(Voluntari(u['name']))
+		data = Tools.DataFile.get_content(Volunteer._DATA_FILE, 'JSON')
+		for u in data[Volunteer.__DATA]:
+			res.append(Volunteer(u['name']))
 		return res
 
 
-class Organitzador(Assistant):
-	ID = 1
-	TYPE = 'ORGANIZACIÓN'
+class Organizer(Assistant):
+	__ID = 1
+	__TYPE = 'ORGANIZACIÓN'
 	__DATA = 'organizers'
 
 	def __init__(self, name):
-		super().__init__('O' + str(Organitzador.ID), Organitzador.TYPE, name)
-		Voluntari.ID += 1
+		super().__init__('O' + str(Organizer.__ID), Organizer.__TYPE, name)
+		Organizer.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
@@ -104,22 +126,20 @@ class Organitzador(Assistant):
 	@staticmethod
 	def get_data():
 		res = []
-		filename = os.path.join(Constants.RES_FOLDER, Organitzador.__DATA)
-		with open(filename, 'r') as file:
-			content = file.read().splitlines()
-		for o in content:
-			res.append(Organitzador(o))
+		data = Tools.DataFile.get_content(Organizer._DATA_FILE, 'JSON')
+		for u in data[Organizer.__DATA]:
+			res.append(Organizer(u['name']))
 		return res
 
 
-class Concursant(Assistant):
-	CRYPT_ID = False
-	TYPE = 'HACKER'
+class Contestant(Assistant):
+	__CRYPT_ID = False
+	__TYPE = 'HACKER'
 
 	def __init__(self, id, data):
-		super().__init__(id, Concursant.TYPE)
+		super().__init__(id, Contestant.__TYPE)
 
-		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[Concursant.CRYPT_ID], Card.QR_SIZE,
+		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[Contestant.__CRYPT_ID], Card.QR_SIZE,
 									Card.QR_BORDER_SIZE)
 		self.name = data['fullName']
 		self.nick = '\"' + data['nickname'] + '\"'
@@ -139,5 +159,5 @@ class Concursant(Assistant):
 		usrs = users_ref.stream()
 		users = []
 		for usr in usrs:
-			users.append(Concursant(usr.id, usr.to_dict()))
+			users.append(Contestant(usr.id, usr.to_dict()))
 		return users
