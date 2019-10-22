@@ -17,6 +17,8 @@ class Card:
 	TYPE_POS = (894, 980)
 	NAME_POS = (894, 780)
 	NICK_POS = (894, 850)
+	LOGO_POS = (920, 250)
+	LOGO_SIZE = (550, 350)
 
 
 class Assistant(object):
@@ -70,13 +72,17 @@ class Company(Assistant):
 	__TYPE = ''
 	__DATA = 'companies'
 
-	def __init__(self, name):
+	def __init__(self, name,image):
 		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
 		Company.__ID += 1
+		self.logopath=os.path.join(Constants.RES_FOLDER,'images',image)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
+		image = Image.open(self.logopath)#.resize((550,350), Image.ANTIALIAS)
+		image=Tools.scale(image,Card.LOGO_SIZE)
+		self.card.paste(image,Card.LOGO_POS)
 
 	@staticmethod
 	def get_data():
@@ -84,7 +90,7 @@ class Company(Assistant):
 		data = Tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
 		for u in data[Company.__DATA]:
 			for i in range(u['number_of_cards']):
-				res.append(Company(u['name']))
+				res.append(Company(u['name'],u['logo']))
 		return res
 
 
