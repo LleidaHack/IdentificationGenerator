@@ -32,8 +32,8 @@ class DataFile:
 	__contents = {}
 
 	@staticmethod
-	def get_content(filepath, type):
-		if filepath in DataFile.__contents:
+	def get_content(filepath, type, reload_if_cached=False):
+		if not reload_if_cached and filepath in DataFile.__contents:
 			return DataFile.__contents[filepath]
 		else:
 			with open(filepath, 'r') as json_file:
@@ -43,12 +43,15 @@ class DataFile:
 					return data
 				else:
 					raise Exception(NotImplemented)
+
 	@staticmethod
 	def clear_cached_content(filepath):
 		if filepath in DataFile.__contents:
+			del DataFile.__contents[filepath]
 			return True
 		else:
 			return False
+
 	@staticmethod
 	def clear_cache():
-		DataFile.__contents={}
+		DataFile.__contents = {}
