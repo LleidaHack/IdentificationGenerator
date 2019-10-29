@@ -11,7 +11,7 @@ def draw_text(image, text, pos, font=Constants.FONT):
 	ImageDraw.Draw(image).text((pos[0], pos[1]), text, (95, 36, 147), font=font)
 
 
-def scale(image, max_size, method=Image.ANTIALIAS):
+def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 	"""
 	resize 'image' to 'max_size' keeping the aspect ratio
 	and place it in center of white 'max_size' image
@@ -25,7 +25,10 @@ def scale(image, max_size, method=Image.ANTIALIAS):
 
 	offset = (((max_size[0] - scaled.size[0]) / 2), ((max_size[1] - scaled.size[1]) / 2))
 	back = Image.new("RGB", max_size, "white")
-	back.paste(scaled, (int(offset[0]),int(offset[1])),scaled)
+	if add_mask:
+		back.paste(scaled, (int(offset[0]),int(offset[1])),scaled)
+	else:
+		back.paste(scaled, (int(offset[0]),int(offset[1])))
 	return back
 
 
@@ -54,7 +57,7 @@ class DataFile:
 		if not reload_if_cached and filepath in DataFile.__contents:
 			return DataFile.__contents[filepath]
 		else:
-			with open(filepath, 'r') as json_file:
+			with open(filepath, 'r',encoding='utf-8') as json_file:
 				if type == 'JSON':
 					data = json.load(json_file)
 					DataFile.__contents[filepath] = data

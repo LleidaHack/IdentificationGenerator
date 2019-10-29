@@ -12,8 +12,6 @@ class Card:
 	QR_POS = (894, 120)
 	QR_SIZE = 450
 	QR_BORDER_SIZE = 0
-	CARD_HEIGTH = 200
-	CARD_WIDTH = 200
 	TYPE_POS = (894, 980)
 	NAME_POS = (894, 780)
 	NICK_POS = (894, 850)
@@ -29,12 +27,16 @@ class Assistant(object):
 		self.type = type
 		self.name = name
 		self.card = None
+		self.qr = None
 
 	def show(self):
 		self.card.show()
 
 	def save(self):
 		self.card.save(os.path.join(Constants.OUT_FOLDER, self.id + '.png'))
+
+	def generate_qr(self, crypt_id=False):
+		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_SIZE, Card.QR_BORDER_SIZE)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(os.path.join(Constants.RES_FOLDER, Constants.BAK_PATH))
@@ -50,12 +52,18 @@ class Guest(Assistant):
 	__TYPE = 'INVITADO'
 	__DATA = 'guests'
 
-	def __init__(self, name):
-		super().__init__('G' + str(Guest.__ID), Guest.__TYPE, name)
+	def __init__(self, name, mtype=None, has_qr=False):
+		super().__init__('G' + str(Guest.__ID), (mtype, Guest.__TYPE)[mtype is None], name)
 		Guest.__ID += 1
+		self.has_qr = has_qr
+		if has_qr:
+			self.generate_qr()
+			self.qr = Tools.scale(self.qr, (594, 594), False)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
+		if self.has_qr:
+			self.card.paste(self.qr, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
@@ -63,7 +71,7 @@ class Guest(Assistant):
 		res = []
 		data = Tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
 		for u in data[Guest.__DATA]:
-			res.append(Guest(u['name']))
+			res.append(Guest(u['name'], u['type'], u['qr']))
 		return res
 
 
@@ -72,17 +80,17 @@ class Company(Assistant):
 	__TYPE = ''
 	__DATA = 'companies'
 
-	def __init__(self, name,image):
+	def __init__(self, name, image):
 		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
 		Company.__ID += 1
-		self.logopath=os.path.join(Constants.RES_FOLDER,'images',image)
+		self.logopath = os.path.join(Constants.RES_FOLDER, 'images', image)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
-		image = Image.open(self.logopath)#.resize((550,350), Image.ANTIALIAS)
-		image=Tools.scale(image,Card.LOGO_SIZE)
-		self.card.paste(image,Card.LOGO_POS)
+		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
+		image = Tools.scale(image, Card.LOGO_SIZE)
+		self.card.paste(image, Card.LOGO_POS)
 
 	@staticmethod
 	def get_data():
@@ -90,12 +98,13 @@ class Company(Assistant):
 		data = Tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
 		for u in data[Company.__DATA]:
 			for i in range(u['number_of_cards']):
-				res.append(Company(u['name'],u['logo']))
+				res.append(Company(u['name'], u['logo']))
 		return res
 
 
 class Volunteer(Assistant):
 	__ID = 1
+	__LOGO_PATH = os.path.join(Constants.RES_FOLDER, 'images', 'logogran.png')
 	__TYPE = 'VOLUNTARIADO'
 	__DATA = 'volunteers'
 
@@ -105,6 +114,9 @@ class Volunteer(Assistant):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
+		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
+		image = Tools.scale(image, Card.LOGO_SIZE)
+		self.card.paste(image, Card.LOGO_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
@@ -118,6 +130,7 @@ class Volunteer(Assistant):
 
 class Organizer(Assistant):
 	__ID = 1
+	__LOGO_PATH = os.path.join(Constants.RES_FOLDER, 'images', 'logogran.png')
 	__TYPE = 'ORGANIZACIÓN'
 	__DATA = 'organizers'
 
@@ -127,6 +140,9 @@ class Organizer(Assistant):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
+		image = Image.open(Organizer.__LOGO_PATH).convert("RGBA")
+		image = Tools.scale(image, Card.LOGO_SIZE)
+		self.card.paste(image, Card.LOGO_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
@@ -145,8 +161,9 @@ class Contestant(Assistant):
 	def __init__(self, id, data):
 		super().__init__(id, Contestant.__TYPE)
 
-		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[Contestant.__CRYPT_ID], Card.QR_SIZE,
-									Card.QR_BORDER_SIZE)
+		self.generate_qr()
+		self.qr = Tools.scale(self.qr, (594, 594), False)
+		# print(self.qr.size)
 		self.name = data['fullName']
 		self.nick = '\"' + data['nickname'] + '\"'
 
