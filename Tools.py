@@ -1,10 +1,32 @@
 import hashlib
 import json
+import os
 
 import qrcode
 from PIL import ImageDraw, Image
 
 import Constants
+
+
+def create_dir(path):
+	exists = os.path.isdir(path)
+	if not exists:
+		try:
+			os.mkdir(path)
+		except OSError:
+			raise OSError('dir creation error')
+
+
+def empty_dir(path, delete_files=True, delete_dirs=True):
+	exists = os.path.isdir(path)
+	if exists and (delete_files or delete_dirs):
+		for root, dirs, files in os.walk(path):
+			if delete_files:
+				for file in files:
+					os.remove(os.path.join(root, file))
+			if delete_dirs:
+				for dir in dirs:
+					os.remove(os.path.join(root, dir))
 
 
 def draw_text(image, text, pos, font=Constants.FONT):
@@ -26,9 +48,9 @@ def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 	offset = (((max_size[0] - scaled.size[0]) / 2), ((max_size[1] - scaled.size[1]) / 2))
 	back = Image.new("RGB", max_size, "white")
 	if add_mask:
-		back.paste(scaled, (int(offset[0]),int(offset[1])),scaled)
+		back.paste(scaled, (int(offset[0]), int(offset[1])), scaled)
 	else:
-		back.paste(scaled, (int(offset[0]),int(offset[1])))
+		back.paste(scaled, (int(offset[0]), int(offset[1])))
 	return back
 
 
@@ -57,7 +79,7 @@ class DataFile:
 		if not reload_if_cached and filepath in DataFile.__contents:
 			return DataFile.__contents[filepath]
 		else:
-			with open(filepath, 'r',encoding='utf-8') as json_file:
+			with open(filepath, 'r', encoding='utf-8') as json_file:
 				if type == 'JSON':
 					data = json.load(json_file)
 					DataFile.__contents[filepath] = data

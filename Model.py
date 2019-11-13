@@ -72,6 +72,8 @@ class Guest(Assistant):
 		data = Tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
 		for u in data[Guest.__DATA]:
 			res.append(Guest(u['name'], u['type'], u['qr']))
+			if Constants.TEST:
+				break
 		return res
 
 
@@ -99,6 +101,10 @@ class Company(Assistant):
 		for u in data[Company.__DATA]:
 			for i in range(u['number_of_cards']):
 				res.append(Company(u['name'], u['logo']))
+				if Constants.TEST:
+					break
+			if Constants.TEST:
+				break
 		return res
 
 
@@ -125,6 +131,8 @@ class Volunteer(Assistant):
 		data = Tools.DataFile.get_content(Volunteer._DATA_FILE, 'JSON')
 		for u in data[Volunteer.__DATA]:
 			res.append(Volunteer(u['name']))
+			if Constants.TEST:
+				break
 		return res
 
 
@@ -151,6 +159,8 @@ class Organizer(Assistant):
 		data = Tools.DataFile.get_content(Organizer._DATA_FILE, 'JSON')
 		for u in data[Organizer.__DATA]:
 			res.append(Organizer(u['name']))
+			if Constants.TEST:
+				break
 		return res
 
 
@@ -163,7 +173,6 @@ class Contestant(Assistant):
 
 		self.generate_qr()
 		self.qr = Tools.scale(self.qr, (594, 594), False)
-		# print(self.qr.size)
 		self.name = data['fullName']
 		self.nick = '\"' + data['nickname'] + '\"'
 
@@ -183,4 +192,6 @@ class Contestant(Assistant):
 		users = []
 		for usr in usrs:
 			users.append(Contestant(usr.id, usr.to_dict()))
+			if Constants.TEST:
+				break
 		return users
