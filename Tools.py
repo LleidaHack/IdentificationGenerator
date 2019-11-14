@@ -58,7 +58,8 @@ def generate_qr(input, size, border_size):
 	qr = qrcode.QRCode(
 		version=1,
 		error_correction=qrcode.constants.ERROR_CORRECT_H,
-		box_size=int(size / 25),
+		# box_size=int(size / 25),
+		box_size=size,
 		border=border_size)
 	qr.add_data(input)
 	qr.make(fit=True)

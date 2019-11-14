@@ -9,12 +9,13 @@ import Tools
 
 
 class Card:
-	QR_POS = (894, 120)
-	QR_SIZE = 450
+	QR_POS = (1221, 176)
+	QR_PIX_SIZE = 1
+	QR_SIZE = (580, 580)
 	QR_BORDER_SIZE = 0
-	TYPE_POS = (894, 980)
-	NAME_POS = (894, 780)
-	NICK_POS = (894, 850)
+	TYPE_POS = (1198, 970)
+	NAME_POS = (1198, 800)
+	NICK_POS = (1198, 870)
 	LOGO_POS = (920, 250)
 	LOGO_SIZE = (550, 350)
 
@@ -36,7 +37,8 @@ class Assistant(object):
 		self.card.save(os.path.join(Constants.OUT_FOLDER, self.id + '.png'))
 
 	def generate_qr(self, crypt_id=False):
-		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_SIZE, Card.QR_BORDER_SIZE)
+		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		self.qr=Tools.scale(self.qr, Card.QR_SIZE,False)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(os.path.join(Constants.RES_FOLDER, Constants.BAK_PATH))
@@ -57,8 +59,7 @@ class Guest(Assistant):
 		Guest.__ID += 1
 		self.has_qr = has_qr
 		if has_qr:
-			self.generate_qr()
-			self.qr = Tools.scale(self.qr, (594, 594), False)
+			self.generate_qr(True)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
@@ -91,8 +92,8 @@ class Company(Assistant):
 		super().generate_card(rgb_back)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
-		image = Tools.scale(image, Card.LOGO_SIZE)
-		self.card.paste(image, Card.LOGO_POS)
+		image = Tools.scale(image, Card.QR_SIZE)
+		self.card.paste(image, Card.QR_POS)
 
 	@staticmethod
 	def get_data():
@@ -121,8 +122,8 @@ class Volunteer(Assistant):
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
-		image = Tools.scale(image, Card.LOGO_SIZE)
-		self.card.paste(image, Card.LOGO_POS)
+		image = Tools.scale(image, Card.QR_SIZE)
+		self.card.paste(image, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
@@ -149,8 +150,8 @@ class Organizer(Assistant):
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		image = Image.open(Organizer.__LOGO_PATH).convert("RGBA")
-		image = Tools.scale(image, Card.LOGO_SIZE)
-		self.card.paste(image, Card.LOGO_POS)
+		image = Tools.scale(image, Card.QR_SIZE)
+		self.card.paste(image, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
@@ -172,7 +173,6 @@ class Contestant(Assistant):
 		super().__init__(id, Contestant.__TYPE)
 
 		self.generate_qr()
-		self.qr = Tools.scale(self.qr, (594, 594), False)
 		self.name = data['fullName']
 		self.nick = '\"' + data['nickname'] + '\"'
 
