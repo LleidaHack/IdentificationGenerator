@@ -1,11 +1,11 @@
 import os
 from PIL import ImageFont
 
-TEST = True
+TEST = False
 if TEST:
 	# dev or prod
 	ENVIROMENT = 'dev'
-elif TEST:
+else:
 	ENVIROMENT = 'prod'
 
 DB_PATH = 'hackeps-2019/' + ENVIROMENT + '/users'

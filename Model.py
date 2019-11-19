@@ -9,9 +9,11 @@ import Tools
 
 
 class Card:
-	QR_POS = (1221, 176)
 	QR_PIX_SIZE = 1
-	QR_SIZE = (580, 580)
+	QR_POS = (1202, 156)
+	# QR_POS = (1221, 176)
+	QR_SIZE = (617, 617)
+	# QR_SIZE = (580, 580)
 	QR_BORDER_SIZE = 0
 	TYPE_POS = (1198, 970)
 	NAME_POS = (1198, 800)
@@ -21,9 +23,11 @@ class Card:
 
 
 class Assistant(object):
+	__ID = 1
+	__DATA = 'empty'
 	_DATA_FILE = os.path.join(Constants.RES_FOLDER, Constants.DATA_FILE)
 
-	def __init__(self, id, type, name=None):
+	def __init__(self, id, type='', name=None):
 		self.id = id
 		self.type = type
 		self.name = name
@@ -38,7 +42,7 @@ class Assistant(object):
 
 	def generate_qr(self, crypt_id=False):
 		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
-		self.qr=Tools.scale(self.qr, Card.QR_SIZE,False)
+		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(os.path.join(Constants.RES_FOLDER, Constants.BAK_PATH))
@@ -46,7 +50,15 @@ class Assistant(object):
 
 	@staticmethod
 	def get_data():
-		return []
+		data = Tools.DataFile.get_content(Assistant._DATA_FILE, 'JSON')
+		num = data[Assistant.__DATA]
+		res = []
+		for i in range(num):
+			res.append(Assistant('A' + str(Assistant.__ID)))
+			Assistant.__ID += 1
+			if Constants.TEST:
+				break
+		return res
 
 
 class Guest(Assistant):
@@ -112,7 +124,7 @@ class Company(Assistant):
 class Volunteer(Assistant):
 	__ID = 1
 	__LOGO_PATH = os.path.join(Constants.RES_FOLDER, 'images', 'logogran.png')
-	__TYPE = 'VOLUNTARIADO'
+	__TYPE = 'VOLUNTARIA/O'
 	__DATA = 'volunteers'
 
 	def __init__(self, name):

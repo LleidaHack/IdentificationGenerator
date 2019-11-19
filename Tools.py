@@ -56,14 +56,16 @@ def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 
 def generate_qr(input, size, border_size):
 	qr = qrcode.QRCode(
-		version=1,
+		version=2,
 		error_correction=qrcode.constants.ERROR_CORRECT_H,
 		# box_size=int(size / 25),
 		box_size=size,
 		border=border_size)
 	qr.add_data(input)
 	qr.make(fit=True)
-	return qr.make_image()
+	qr=qr.make_image()
+	# qr.show()
+	return qr
 
 
 def crypt(input, method='md5'):
