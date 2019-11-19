@@ -1,7 +1,7 @@
 import os
 from PIL import ImageFont
 
-TEST = False
+TEST = True
 if TEST:
 	# dev or prod
 	ENVIROMENT = 'dev'

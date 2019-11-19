@@ -10,9 +10,9 @@ import Tools
 
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (1202, 156)
+	QR_POS = (1201, 156)
 	# QR_POS = (1221, 176)
-	QR_SIZE = (617, 617)
+	QR_SIZE = (619, 619)
 	# QR_SIZE = (580, 580)
 	QR_BORDER_SIZE = 0
 	TYPE_POS = (1198, 970)
