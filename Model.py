@@ -80,12 +80,13 @@ class Guest(Assistant):
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
-	def get_data():
+	def get_data(name=None):
 		res = []
 		data = Tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
 		for u in data[Guest.__DATA]:
-			res.append(Guest(u['name'], u['type'], u['qr']))
-			if Constants.TEST:
+			if name is None or u['name'] == name:
+				res.append(Guest(u['name'], u['type'], u['qr']))
+			if Constants.TEST or (name is not None and u['name'] == name):
 				break
 		return res
 
@@ -108,15 +109,16 @@ class Company(Assistant):
 		self.card.paste(image, Card.QR_POS)
 
 	@staticmethod
-	def get_data():
+	def get_data(name=None):
 		res = []
 		data = Tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
 		for u in data[Company.__DATA]:
 			for i in range(u['number_of_cards']):
-				res.append(Company(u['name'], u['logo']))
+				if name is None or u['name'] == name:
+					res.append(Company(u['name'], u['logo']))
 				if Constants.TEST:
 					break
-			if Constants.TEST:
+			if Constants.TEST or (name is not None and u['name'] == name):
 				break
 		return res
 
@@ -167,12 +169,13 @@ class Organizer(Assistant):
 		Tools.draw_text(self.card, self.name, Card.NAME_POS)
 
 	@staticmethod
-	def get_data():
+	def get_data(name=None):
 		res = []
 		data = Tools.DataFile.get_content(Organizer._DATA_FILE, 'JSON')
 		for u in data[Organizer.__DATA]:
-			res.append(Organizer(u['name']))
-			if Constants.TEST:
+			if name is None or u['name'] == name:
+				res.append(Organizer(u['name']))
+			if Constants.TEST or (name is not None and u['name'] == name):
 				break
 		return res
 
@@ -180,10 +183,10 @@ class Organizer(Assistant):
 class Contestant(Assistant):
 	__CRYPT_ID = False
 	__TYPE = 'HACKER'
+	__FIREBASE = None
 
 	def __init__(self, id, data):
 		super().__init__(id, Contestant.__TYPE)
-
 		self.generate_qr()
 		self.name = data['fullName']
 		self.nick = '\"' + data['nickname'] + '\"'
@@ -195,15 +198,22 @@ class Contestant(Assistant):
 		Tools.draw_text(self.card, self.nick, Card.NICK_POS)
 
 	@staticmethod
-	def get_data(cert):
+	def __firebase_init(cred):
+		if Contestant.__FIREBASE is None:
+			Contestant.__FIREBASE = firebase_admin.initialize_app(cred)
+		return Contestant.__FIREBASE
+
+	@staticmethod
+	def get_data(cert, id=None, name=None):
 		cred = firebase_admin.credentials.Certificate(cert)
-		firebase_admin.initialize_app(cred)
+		Contestant.__firebase_init(cred)
 		db = firestore.client()
 		users_ref = db.collection(Constants.DB_PATH)
 		usrs = users_ref.stream()
 		users = []
 		for usr in usrs:
-			users.append(Contestant(usr.id, usr.to_dict()))
-			if Constants.TEST:
+			if (id is None and name is None) or (id is not None and usr.id == id) or (name is not None and name == usr.to_dict()['fullName']):
+				users.append(Contestant(usr.id, usr.to_dict()))
+			if Constants.TEST or (id is not None and usr.id == id) or (name is not None and name == usr.to_dict()['fullName']):
 				break
 		return users
