@@ -5,8 +5,6 @@ import os
 import qrcode
 from PIL import ImageDraw, Image
 
-import Constants
-
 
 def create_dir(path):
 	exists = os.path.isdir(path)
@@ -29,7 +27,7 @@ def empty_dir(path, delete_files=True, delete_dirs=True):
 					os.remove(os.path.join(root, dir))
 
 
-def draw_text(image, text, pos, font=Constants.FONT):
+def draw_text(image, text, pos, font):
 	ImageDraw.Draw(image).text((pos[0], pos[1]), text, (95, 36, 147), font=font)
 
 
@@ -63,8 +61,7 @@ def generate_qr(input, size, border_size):
 		border=border_size)
 	qr.add_data(input)
 	qr.make(fit=True)
-	qr=qr.make_image()
-	# qr.show()
+	qr = qr.make_image()
 	return qr
 
 

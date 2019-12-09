@@ -1,0 +1,52 @@
+{
+  "empty": 5,
+  "organizers": [
+    {"name":"Alba Lamas"},
+    {"name":"Albert Merino"},
+    {"name":"Albert Sala"},
+    {"name":"Daniel Lucio"},
+    {"name":"David Sarrat Gonzalez"},
+    {"name":"Eduard Sales"},
+    {"name":"Elena Barrachina i Ribes"},
+    {"name":"Francisco Manuel Martin"},
+    {"name":"Gabriel Daniel Bogdad"},
+    {"name":"Gerard Soldevila Pelegrí"},
+    {"name":"Guillem Orellana"},
+    {"name":"Jordi Onrubia"},
+    {"name":"Lluís Llabot"},
+    {"name":"Marcel Ortiz"},
+    {"name":"Marta Albets"},
+    {"name":"Oriol Alàs Cercós"},
+    {"name":"Oscar Lopez "},
+    {"name":"Paula Gallucci"},
+    {"name":"Ton Llucià Senserrich"},
+    {"name":"Victor Martinez"},
+    {"name":"Victor Vilaseca"},
+    {"name":"Mauricio"}
+  ],
+  "volunteers": [
+    {"name":"Aiax Faura Vilalta"},
+    {"name":"Alex Florensa Torres"},
+    {"name":"Berta Vidal Capellades"},
+    {"name":"Carla Munsó Campàs"},
+    {"name":"Iago Varela Lamas"},
+    {"name":"Raúl Hidalgo Caballero"}
+  ],
+  "companies": [
+    {"name":"Actium Digital","number_of_cards":5,"logo":"actium.png"},
+    {"name":"BonÀrea","number_of_cards":9,"logo":"bon-area.png"},
+	{"name":"Escola Politècnica Superior","number_of_cards":10,"logo":"eps.png"},
+    {"name":"EureCat","number_of_cards":5,"logo":"eurecat.png"},
+    {"name":"IAESTE","number_of_cards":2,"logo":"iaeste.png"},
+    {"name":"Intech3D","number_of_cards":5,"logo":"intech3d.png"},
+    {"name":"Invelon","number_of_cards":5,"logo":"invelon.png"},
+    {"name":"Origen Studio","number_of_cards":5,"logo":"origen-studio.jpg"},
+    {"name":"Stratesys","number_of_cards":5,"logo":"stratesys.png"}
+  ],
+  "guests": [
+    {"name":"Airen","type":"HACKER","qr":true},
+    {"name":"Alma","type":"HACKER","qr":true},
+    {"name":"Juan","type":"HACKER","qr":true},
+    {"name":"Jose Enrique","type":"HACKER","qr":true}
+  ]
+}

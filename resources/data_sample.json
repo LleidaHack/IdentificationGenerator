@@ -1,0 +1,15 @@
+{
+  "empty": 5,
+  "organizers": [
+    {"name":"Ton Llucià Senserrich"}
+  ],
+  "volunteers": [
+    {"name":"Ton Llucià Senserrich"}
+  ],
+  "companies": [
+    {"name":"Ton Llucià Senserrich","number_of_cards":5,"logo":"logo.png"}
+  ],
+  "guests": [
+    {"name":"Ton Llucià Senserrich","type":"HACKER","qr":true}
+  ]
+}
