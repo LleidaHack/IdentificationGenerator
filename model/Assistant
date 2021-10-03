@@ -1,0 +1,37 @@
+class Assistant(object):
+	__ID = 1
+	__DATA = 'empty'
+	_DATA_FILE = Config.DATA_PATH
+
+	def __init__(self, id, type='', name=None):
+		self.id = id
+		self.type = type
+		self.name = name
+		self.card = None
+		self.qr = None
+
+	def show(self):
+		self.card.show()
+
+	def save(self):
+		self.card.save(os.path.join(Config.OUT_PATH, self.id + '.png'))
+
+	def generate_qr(self, crypt_id=False):
+		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		self.card = Image.open(Config.BAK_PATH)
+		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.FONT)
+
+	@staticmethod
+	def get_data():
+		data = Tools.DataFile.get_content(Assistant._DATA_FILE, 'JSON')
+		num = data[Assistant.__DATA]
+		res = []
+		for _ in range(num):
+			res.append(Assistant('A' + str(Assistant.__ID)))
+			Assistant.__ID += 1
+			if Config.TEST:
+				break
+		return res

@@ -1,5 +1,5 @@
 #custom
-resources/editions/*/2019_firebase_cert.json
+resources/editions/*/*_firebase_cert.json
 resources/editions/*/data.json
 _out_/
 
