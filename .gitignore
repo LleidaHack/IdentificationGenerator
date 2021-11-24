@@ -1,7 +1,8 @@
 #custom
-resources/editions/*/*_firebase_cert.json
+resources/*_firebase_cert.json
 resources/editions/*/data.json
 _out_/
+*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
