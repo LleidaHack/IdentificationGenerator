@@ -3,7 +3,7 @@ from PIL import ImageFont
 
 TEST = False
 
-EDITION='2021'
+EDITION='2022'
 EDITIONS_FOLDER = 'editions'
 
 DB_PATH_T = 'hackeps-'+EDITION+'/dev/users'
@@ -25,8 +25,8 @@ DB_CERT_PATH = path.join(RES_PATH, DB_CERT)
 BAK_FILE = 'plantilla.png'
 BAK_PATH = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE)
 
-FONT_FILE = 'Montserrat-Regular.ttf'
-# FONT_FILE = 'arial.ttf'
+# FONT_FILE = 'Montserrat-Regular.ttf'
+FONT_FILE = 'SpaceMono-Regular.ttf'
 FONT_PATH = path.join(RES_PATH, FONT_FILE)
 FONT_SIZE = 80
 FONT_COLOR = (0,0,0)
