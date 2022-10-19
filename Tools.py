@@ -27,8 +27,10 @@ def empty_dir(path, delete_files=True, delete_dirs=True):
 					os.remove(os.path.join(root, dir))
 
 
-def draw_text(image, text, pos, font):
-	ImageDraw.Draw(image).text((pos[0], pos[1]), text, (95, 36, 147), font=font)
+def draw_text(image, text, pos, font, fill):
+	draw = ImageDraw.Draw(image)
+	w, h = draw.textsize(text, font=font)
+	ImageDraw.Draw(image).text(((image.width-w)/2, pos[1]), text, font=font,fill=fill)
 
 
 def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
