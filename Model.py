@@ -13,8 +13,9 @@ class Card:
 	QR_POS = (1301, 172)
 	QR_SIZE = (723, 723)
 	QR_BORDER_SIZE = 0
-	TYPE_POS = (850, 1450)
-	NAME_POS = (500, 1250)
+	TYPE_POS = (0, 155)
+	# NAME_POS = (500, 1250)
+	NAME_POS = (140, 120)
 	NICK_POS = (1198, 870)
 	# LOGO_POS = (920, 250)
 	# LOGO_SIZE = (550, 350)
@@ -46,7 +47,7 @@ class Assistant(object):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(Config.BAK_PATH)
-		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.WHITE_FONT_COLOR)
 
 	@staticmethod
 	def get_data():
@@ -77,7 +78,7 @@ class Guest(Assistant):
 		super().generate_card(rgb_back)
 		if self.has_qr:
 			self.card.paste(self.qr, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
 
 	@staticmethod
 	def get_data(name=None):
@@ -103,7 +104,7 @@ class Company(Assistant):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
 		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
@@ -138,7 +139,7 @@ class Volunteer(Assistant):
 		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
 
 	@staticmethod
 	def get_data(name=None):
@@ -167,7 +168,7 @@ class Organizer(Assistant):
 		image = Image.open(Organizer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
 
 	@staticmethod
 	def get_data(name=None):
@@ -199,7 +200,7 @@ class Contestant(Assistant):
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		self.card.paste(self.qr, Card.QR_POS)
-		Tools.draw_text(self.card, self.name+'    '+self.nick, Card.NAME_POS, Config.FONT, Config.FONT_COLOR)
+		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
 		# Tools.draw_text(self.card, self.nick, Card.NICK_POS, Config.FONT)
 
 	@staticmethod
