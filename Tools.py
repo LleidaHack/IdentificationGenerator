@@ -4,6 +4,7 @@ import os
 
 import qrcode
 from PIL import ImageDraw, Image
+import Config
 
 
 def create_dir(path):
@@ -27,10 +28,15 @@ def empty_dir(path, delete_files=True, delete_dirs=True):
 					os.remove(os.path.join(root, dir))
 
 
-def draw_text(image, text, pos, font, fill):
+def draw_text(image, text, pos, font, fill, centrate=True, mayus=True):
+	if mayus:
+		text = text.upper()
 	draw = ImageDraw.Draw(image)
 	w, h = draw.textsize(text, font=font)
-	ImageDraw.Draw(image).text(((image.width-w)/2, pos[1]), text, font=font,fill=fill)
+	if centrate:
+		ImageDraw.Draw(image).text(((image.width-w)/2, pos[1]), text, font=font,fill=fill)
+	else:
+		ImageDraw.Draw(image).text(pos, text, font=font,fill=fill)
 
 
 def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
@@ -46,7 +52,7 @@ def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 		scaled = image.resize((int((float(max_size[1]) * im_aspect) + 0.5), max_size[1]), method)
 
 	offset = (((max_size[0] - scaled.size[0]) / 2), ((max_size[1] - scaled.size[1]) / 2))
-	back = Image.new("RGB", max_size, "white")
+	back = Image.new("RGBA", max_size, Config.BAK_COLOR)
 	if add_mask:
 		back.paste(scaled, (int(offset[0]), int(offset[1])), scaled)
 	else:
@@ -63,7 +69,9 @@ def generate_qr(input, size, border_size):
 		border=border_size)
 	qr.add_data(input)
 	qr.make(fit=True)
+	# qr = qr.make_image(fill_color=5, back_color=Config.BAK_COLOR)
 	qr = qr.make_image()
+	# qr.show()
 	return qr
 
 

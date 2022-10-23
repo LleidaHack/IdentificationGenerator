@@ -16,15 +16,15 @@ grpcio==1.25.0
 httplib2==0.19.0
 idna==2.8
 msgpack==0.6.2
-Pillow==9.0.1
-pkg-resources==0.0.0
+Pillow==8.4
+# pkg-resources==0.0.0
 protobuf==3.15.0
 pyasn1==0.4.7
 pyasn1-modules==0.2.7
 pytz==2019.3
-qrcode==6.1
+qrcode==7.0
 requests==2.22.0
-rsa==4.7
+rsa==4.0
 six==1.13.0
 uritemplate==3.0.0
-urllib3==1.26.5
+urllib3==1.22.0
