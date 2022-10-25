@@ -26,8 +26,10 @@ BAK_FILE = 'plantilla.png'
 BAK_PATH = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE)
 
 # FONT_FILE = 'Montserrat-Regular.ttf'
-FONT_FILE = 'SpaceMono-Bold.ttf'
-FONT_PATH = path.join(RES_PATH, FONT_FILE)
+FONT_FILE = 'DIN-Bold.ttf'
+BOLD_FONT_FILE = 'DIN-Bold.ttf'
+FONT_FOLDER = 'fonts'
+FONT_PATH = path.join(RES_PATH, FONT_FOLDER, FONT_FILE)
 TYPE_FONT_SIZE = 18
 NAME_FONT_SIZE = 12
 FONT_COLOR = (0,0,0)
