@@ -25,8 +25,7 @@ DB_CERT_PATH = path.join(RES_PATH, DB_CERT)
 BAK_FILE = 'plantilla.png'
 BAK_PATH = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE)
 
-# FONT_FILE = 'Montserrat-Regular.ttf'
-FONT_FILE = 'DIN-Bold.ttf'
+FONT_FILE = 'DIN-Regular.ttf'
 BOLD_FONT_FILE = 'DIN-Bold.ttf'
 FONT_FOLDER = 'fonts'
 FONT_PATH = path.join(RES_PATH, FONT_FOLDER, FONT_FILE)
@@ -36,7 +35,6 @@ FONT_COLOR = (0,0,0)
 WHITE_FONT_COLOR = (255,255,255)
 TYPE_FONT = ImageFont.truetype(FONT_PATH, TYPE_FONT_SIZE)
 NAME_FONT = ImageFont.truetype(FONT_PATH, NAME_FONT_SIZE)
-# FONT = ImageFont.truetype("Symbola.ttf", 60, encoding='unic')
 
 MAIN_COLOR = (31, 33, 36)
 BAK_COLOR = (247, 247, 242)
