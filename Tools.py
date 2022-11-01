@@ -38,6 +38,14 @@ def draw_text(image, text, pos, font, fill, centrate=True, mayus=True):
 	else:
 		ImageDraw.Draw(image).text(pos, text, font=font,fill=fill)
 
+def centrate_text_relative(image, text, font, fill, relative_pos, relative_size, mayus=True):
+	if mayus:
+		text = text.upper()
+	draw = ImageDraw.Draw(image)
+	w, h = draw.textsize(text, font=font)
+	x = relative_pos[0] + (relative_size[0] - w) / 2
+	y = relative_pos[1] + (relative_size[1] - h) / 2
+	ImageDraw.Draw(image).text((x, y), text, font=font,fill=fill)
 
 def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 	"""

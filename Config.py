@@ -25,9 +25,9 @@ DB_CERT_PATH = path.join(RES_PATH, DB_CERT)
 BAK_FILE = 'plantilla.png'
 BAK_PATH = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE)
 
-# FONT_FILE = 'Montserrat-Regular.ttf'
+FONT_FOLDER = 'fonts'
 FONT_FILE = 'SpaceMono-Bold.ttf'
-FONT_PATH = path.join(RES_PATH, FONT_FILE)
+FONT_PATH = path.join(RES_PATH, FONT_FOLDER, FONT_FILE)
 TYPE_FONT_SIZE = 18
 NAME_FONT_SIZE = 12
 FONT_COLOR = (0,0,0)

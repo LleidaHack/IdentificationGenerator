@@ -10,8 +10,8 @@ import Tools
 
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (1301, 172)
-	QR_SIZE = (723, 723)
+	QR_POS = (147, 10)
+	QR_SIZE = (100, 100)
 	QR_BORDER_SIZE = 0
 	TYPE_POS = (0, 155)
 	# NAME_POS = (500, 1250)
@@ -64,7 +64,7 @@ class Assistant(object):
 
 class Guest(Assistant):
 	__ID = 1
-	__TYPE = 'INVITADO'
+	__TYPE = 'CONVIDAT'
 	__DATA = 'guests'
 
 	def __init__(self, name, mtype=None, has_qr=False):
@@ -94,7 +94,7 @@ class Guest(Assistant):
 
 class Company(Assistant):
 	__ID = 1
-	__TYPE = ''
+	__TYPE = 'EMPRESSA'
 	__DATA = 'companies'
 
 	def __init__(self, name, image):
@@ -127,7 +127,7 @@ class Company(Assistant):
 class Volunteer(Assistant):
 	__ID = 1
 	__LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE = 'VOLUNTARIA/O'
+	__TYPE = 'VOLUNTARI/A'
 	__DATA = 'volunteers'
 
 	def __init__(self, name):
@@ -156,7 +156,7 @@ class Volunteer(Assistant):
 class Organizer(Assistant):
 	__ID = 1
 	__LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE = 'ORGANIZACIÓN'
+	__TYPE = 'ORGANIZACIÓ'
 	__DATA = 'organizers'
 
 	def __init__(self, name):
