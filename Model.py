@@ -46,7 +46,7 @@ class Assistant(object):
 		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
-	def generate_card(self, rgb_back=(255, 255, 255), name=None):
+	def generate_card(self, rgb_back=(255, 255, 255), name=None, t=None, h=None):
 		self.card = Image.open(Config.BAK_PATH)
 		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.FONT_COLOR)
 		if not name is None:
@@ -99,9 +99,12 @@ class Company(Assistant):
 		Company.__ID += 1
 		self.company_name = company_name
 
-	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back, name=self.name)
+	def generate_card(self, rgb_back=(255, 255, 255),t=None,h=None):
+		super().generate_card(rgb_back, name=self.name, t=t, h=h)
 		Tools.draw_text(self.card, self.company_name, Card.COMP_NAME_POS, Config.TYPE_FONT, Config.FONT_COLOR)
+		img = Image.new('RGB', (1063, 763),(255,255,255))
+		img.paste(self.card, (0,0))
+		self.card = img
 
 	@staticmethod
 	def get_data(name=None):

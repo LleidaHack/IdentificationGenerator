@@ -15,9 +15,12 @@ users = []
 Tools.create_dir(Config.OUT_PATH)
 Tools.empty_dir(Config.OUT_PATH)
 c=Model.Company('Laura Haro Escoi', 'Lleidahack')
-for i in range(10):
-    c.generate_card()
+t=40
+h=40
+for i in range(4):
+    c.generate_card(t=t, h=h)
     c.card.save(os.path.join(Config.OUT_PATH, 'card' + str(i) + '.png'))
+    
 # for u in users:
 # 	u.generate_card()
 # 	u.save()
