@@ -1,6 +1,7 @@
 #custom
 resources/*_firebase_cert.json
 resources/editions/*/data.json
+resources/editions/*/*.pdf
 _out_/
 *.pdf
 
