@@ -18,4 +18,4 @@ Tools.empty_dir(Config.OUT_PATH)
 for u in users:
 	u.generate_card()
 	u.save()
-	# break
+	break

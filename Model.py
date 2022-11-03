@@ -10,8 +10,8 @@ import Tools
 
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (147, 10)
-	QR_SIZE = (100, 100)
+	QR_POS = (442, 70)
+	QR_SIZE = (270, 270)
 	QR_BORDER_SIZE = 0
 	TYPE_POS = (0, 155)
 	# NAME_POS = (500, 1250)
@@ -49,6 +49,11 @@ class Assistant(object):
 		self.card = Image.open(Config.BAK_PATH)
 		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.WHITE_FONT_COLOR)
 
+	def smallen(self):
+		blank = Image.new('RGB', (1063, 763),(255,255,255))
+		blank.paste(self.card, (0, 0))
+		self.card = blank
+
 	@staticmethod
 	def get_data():
 		data = Tools.DataFile.get_content(Assistant._DATA_FILE, 'JSON')
@@ -79,6 +84,7 @@ class Guest(Assistant):
 		if self.has_qr:
 			self.card.paste(self.qr, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
+		self.smallen()
 
 	@staticmethod
 	def get_data(name=None):
@@ -108,6 +114,7 @@ class Company(Assistant):
 		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
+		self.smallen()
 
 	@staticmethod
 	def get_data(name=None):
@@ -140,6 +147,7 @@ class Volunteer(Assistant):
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
+		self.smallen()
 
 	@staticmethod
 	def get_data(name=None):
@@ -169,6 +177,7 @@ class Organizer(Assistant):
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
+		self.smallen()
 
 	@staticmethod
 	def get_data(name=None):
@@ -202,6 +211,7 @@ class Contestant(Assistant):
 		self.card.paste(self.qr, Card.QR_POS)
 		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
 		# Tools.draw_text(self.card, self.nick, Card.NICK_POS, Config.FONT)
+		self.smallen()
 
 	@staticmethod
 	def __firebase_init(cred):
