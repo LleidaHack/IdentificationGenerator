@@ -46,11 +46,12 @@ class Assistant(object):
 		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
-	def generate_card(self, rgb_back=(255, 255, 255), name=None, t=None, h=None):
+	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(Config.BAK_PATH)
 		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.FONT_COLOR)
-		if not name is None:
-			Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.FONT_COLOR, mayus=False)
+		img = Image.new('RGB', (1062, 762),(255,255,255))
+		img.paste(self.card, (0,0))
+		self.card = img
 
 	@staticmethod
 	def get_data():
@@ -67,52 +68,65 @@ class Assistant(object):
 class Volunteer(Assistant):
 	__ID = 1
 	__LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE = 'VOLUNTARIA/O'
+	__TYPE = 'VOLUNTARI'
 	__DATA = 'volunteers'
 
-	def __init__(self, name):
-		super().__init__('V' + str(Volunteer.__ID), Volunteer.__TYPE, name)
+	def __init__(self):
+		super().__init__('V' + str(Volunteer.__ID), Volunteer.__TYPE)
 		Volunteer.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back, name=self.name)
+		super().generate_card(rgb_back)
 
 	@staticmethod
 	def get_data(name=None):
-		res = []
-		data = Tools.DataFile.get_content(Volunteer._DATA_FILE, 'JSON')
-		for u in data[Volunteer.__DATA]:
-			if name is None or name == u['name']:
-				res.append(Volunteer(u['name']))
-			if Config.TEST or (name is not None and name == u['name']):
-				break
-		return res
+		pass
 
-class Company(Assistant):
+class Expositor(Assistant):
 	__ID = 1
 	# __LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
 	__TYPE = 'EXPOSITOR'
 	__DATA = 'companies'
 
-	def __init__(self, name, company_name):
-		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
-		Company.__ID += 1
-		self.company_name = company_name
+	def __init__(self):
+		super().__init__('E' + str(Expositor.__ID), Expositor.__TYPE)
+		Expositor.__ID += 1
 
-	def generate_card(self, rgb_back=(255, 255, 255),t=None,h=None):
-		super().generate_card(rgb_back, name=self.name, t=t, h=h)
-		Tools.draw_text(self.card, self.company_name, Card.COMP_NAME_POS, Config.TYPE_FONT, Config.FONT_COLOR)
-		img = Image.new('RGB', (1063, 763),(255,255,255))
-		img.paste(self.card, (0,0))
-		self.card = img
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		super().generate_card(rgb_back)
 
 	@staticmethod
 	def get_data(name=None):
-		res = []
-		data = Tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
-		for u in data[Company.__DATA]:
-			if name is None or name == u['name']:
-				res.append(Company(u['name']))
-			if Config.TEST or (name is not None and name == u['name']):
-				break
-		return res
+		pass
+
+class Colaborator(Assistant):
+	__ID = 1
+	__TYPE = 'COL·LABORADOR'
+	__DATA = 'companies'
+
+	def __init__(self):
+		super().__init__('C' + str(Colaborator.__ID), Colaborator.__TYPE)
+		Colaborator.__ID += 1
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		super().generate_card(rgb_back)
+
+	@staticmethod
+	def get_data(name=None):
+		pass
+
+class Organizer(Assistant):
+	__ID = 1
+	__TYPE = 'ORGANITZADOR'
+	__DATA = 'companies'
+
+	def __init__(self):
+		super().__init__('O' + str(Organizer.__ID), Organizer.__TYPE)
+		Organizer.__ID += 1
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		super().generate_card(rgb_back)
+
+	@staticmethod
+	def get_data(name=None):
+		pass

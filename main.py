@@ -14,16 +14,19 @@ users = []
 
 Tools.create_dir(Config.OUT_PATH)
 Tools.empty_dir(Config.OUT_PATH)
-c=Model.Company('Laura Haro Escoi', 'Lleidahack')
-t=40
-h=40
+
+
+#create 4 cars on each type
+users=[]
 for i in range(4):
-    c.generate_card(t=t, h=h)
-    c.card.save(os.path.join(Config.OUT_PATH, 'card' + str(i) + '.png'))
+    users.append(Model.Colaborator())
+    users.append(Model.Organizer())
+    users.append(Model.Volunteer())
+    users.append(Model.Expositor())
     
-# for u in users:
-# 	u.generate_card()
-# 	u.save()
+for u in users:
+	u.generate_card()
+	u.save()
 # 	break
 
 
