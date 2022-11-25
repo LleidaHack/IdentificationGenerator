@@ -10,23 +10,21 @@ import Tools
 
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (442, 70)
-	QR_SIZE = (270, 270)
+	QR_POS = (450, 78)
+	_QR_SIZE = 267
+	QR_SIZE = (_QR_SIZE, _QR_SIZE)
 	QR_BORDER_SIZE = 0
-	TYPE_POS = (0, 155)
-	# NAME_POS = (500, 1250)
-	NAME_POS = (140, 120)
+	TYPE_POS = (0, 475)
+	NAME_POS = (QR_POS[0], 370)
 	NICK_POS = (1198, 870)
-	# LOGO_POS = (920, 250)
-	# LOGO_SIZE = (550, 350)
 
 
 class Assistant(object):
-	__ID = 1
-	__DATA = 'empty'
-	_DATA_FILE = Config.DATA_PATH
+	__ID:int = 1
+	__DATA:str = 'empty'
+	_DATA_FILE:str = Config.DATA_PATH
 
-	def __init__(self, id, type='', name=None):
+	def __init__(self, id:str, type:str='', name:str=None):
 		self.id = id
 		self.type = type
 		self.name = name
@@ -37,20 +35,20 @@ class Assistant(object):
 		self.card.show()
 
 	def save(self):
-		# self.card=Tools.scale(self.card, (410,265))
-		# self.card=Tools.scale(self.card, (2188,1640))
-		self.card.save(os.path.join(Config.OUT_PATH, self.id + '.png'))
+		self.card.save(os.path.join(Config.OUT_PATH, str(self.id) + '.png'))
 
 	def generate_qr(self, crypt_id=False):
-		self.qr = Tools.generate_qr((self.id, Tools.crypt(self.id))[crypt_id], Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		self.qr = Tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		self.card = Image.open(Config.BAK_PATH)
 		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.WHITE_FONT_COLOR)
+		if self.type == '':
+			self.smallen()
 
 	def smallen(self):
-		blank = Image.new('RGB', (1063, 763),(255,255,255))
+		blank = Image.new('RGB', (1082, 782),(255,255,255))
 		blank.paste(self.card, (0, 0))
 		self.card = blank
 
@@ -68,22 +66,30 @@ class Assistant(object):
 
 
 class Guest(Assistant):
-	__ID = 1
-	__TYPE = 'CONVIDAT'
-	__DATA = 'guests'
+	__ID:int = 1
+	__TYPE:str = 'CONVIDAT'
+	__DATA:str = 'guests'
 
-	def __init__(self, name, mtype=None, has_qr=False):
-		super().__init__('HackEPS_Guest_' + str(Guest.__ID), (mtype, Guest.__TYPE)[mtype is None], name)
+	def __init__(self, name:str, mtype:str='', logo:str='', has_qr:bool=False):
+		super().__init__('HackEPS_Guest_' + str(Guest.__ID), (mtype, Guest.__TYPE)[mtype is ''], name)
 		Guest.__ID += 1
 		self.has_qr = has_qr
+		self.logo = logo
 		if has_qr:
 			self.generate_qr(True)
+		if not logo == '':
+			self.logopath = os.path.join(Config.RES_PATH, Config.EDITIONS_FOLDER, Config.EDITION, 'images', logo)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
-		if self.has_qr:
+		if self.logo is not '':
+			logo = Image.open(self.logopath).convert("RGBA")
+			logo = Tools.scale(logo, Card.QR_SIZE)
+			self.card.paste(logo, Card.QR_POS)
+		elif self.has_qr:
 			self.card.paste(self.qr, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
+		if self.name is not '':
+			Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
 		self.smallen()
 
 	@staticmethod
@@ -92,28 +98,28 @@ class Guest(Assistant):
 		data = Tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
 		for u in data[Guest.__DATA]:
 			if name is None or u['name'] == name:
-				res.append(Guest(u['name'], u['type'], u['qr']))
+				res.append(Guest(u['name'], u['type'], u['logo'], u['qr']))
 			if Config.TEST or (name is not None and u['name'] == name):
 				break
 		return res
 
 
 class Company(Assistant):
-	__ID = 1
-	__TYPE = 'EMPRESSA'
-	__DATA = 'companies'
+	__ID:int = 1
+	__TYPE:str = 'EMPRESSA'
+	__DATA:str = 'companies'
 
-	def __init__(self, name, image):
+	def __init__(self, name:str, image):
 		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
 		Company.__ID += 1
 		self.logopath = os.path.join(Config.RES_PATH, Config.EDITIONS_FOLDER, Config.EDITION, 'images', image)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
 		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
+		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
 		self.smallen()
 
 	@staticmethod
@@ -132,12 +138,12 @@ class Company(Assistant):
 
 
 class Volunteer(Assistant):
-	__ID = 1
-	__LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE = 'VOLUNTARI/A'
-	__DATA = 'volunteers'
+	__ID:int = 1
+	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
+	__TYPE:str = 'VOLUNTARI/A'
+	__DATA:str = 'volunteers'
 
-	def __init__(self, name):
+	def __init__(self, name:str):
 		super().__init__('V' + str(Volunteer.__ID), Volunteer.__TYPE, name)
 		Volunteer.__ID += 1
 
@@ -146,7 +152,7 @@ class Volunteer(Assistant):
 		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR)
+		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
 		self.smallen()
 
 	@staticmethod
@@ -160,12 +166,40 @@ class Volunteer(Assistant):
 				break
 		return res
 
+class Mentor(Assistant):
+	__ID:int = 1
+	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
+	__TYPE:str = 'MENTOR/A'
+	__DATA:str = 'mentors'
+
+	def __init__(self, name:str):
+		super().__init__('M' + str(Mentor.__ID), Mentor.__TYPE, name)
+		Mentor.__ID += 1
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		super().generate_card(rgb_back)
+		image = Image.open(Mentor.__LOGO_PATH).convert("RGBA")
+		image = Tools.scale(image, Card.QR_SIZE)
+		self.card.paste(image, Card.QR_POS)
+		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		self.smallen()
+
+	@staticmethod
+	def get_data(name=None):
+		res = []
+		data = Tools.DataFile.get_content(Mentor._DATA_FILE, 'JSON')
+		for u in data[Mentor.__DATA]:
+			if name is None or name == u['name']:
+				res.append(Mentor(u['name']))
+			if Config.TEST or (name is not None and name == u['name']):
+				break
+		return res
 
 class Organizer(Assistant):
-	__ID = 1
-	__LOGO_PATH = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE = 'ORGANIZACIÓ'
-	__DATA = 'organizers'
+	__ID:int = 1
+	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
+	__TYPE:str = 'ORGANIZACIÓ'
+	__DATA:str = 'organizers'
 
 	def __init__(self, name):
 		super().__init__('O' + str(Organizer.__ID), Organizer.__TYPE, name)
@@ -176,7 +210,8 @@ class Organizer(Assistant):
 		image = Image.open(Organizer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
+		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		# Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
 		self.smallen()
 
 	@staticmethod
@@ -194,9 +229,9 @@ class Organizer(Assistant):
 
 class Contestant(Assistant):
 	__CRYPT_ID = False
-	__TYPE = 'HACKER'
+	__TYPE:str = 'HACKER'
 	__FIREBASE = None
-	__FIRE_PATH = Config.DB_PATH
+	__FIRE_PATH:str = Config.DB_PATH_T if Config.TEST else Config.DB_PATH
 
 	def __init__(self, id, data):
 		super().__init__(id, Contestant.__TYPE)
@@ -209,8 +244,7 @@ class Contestant(Assistant):
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
 		self.card.paste(self.qr, Card.QR_POS)
-		Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
-		# Tools.draw_text(self.card, self.nick, Card.NICK_POS, Config.FONT)
+		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
 		self.smallen()
 
 	@staticmethod
@@ -228,10 +262,8 @@ class Contestant(Assistant):
 		usrs = users_ref.stream()
 		users = []
 		for usr in usrs:
-			if (id is None and name is None) or (id is not None and usr.id == id) or (
-					name is not None and name == usr.to_dict()['fullName']):
+			if ((id is None and name is None) 
+				or (id is not None and usr.id == id) 
+				or (name is not None and name == usr.to_dict()['fullName'])):
 				users.append(Contestant(usr.id, usr.to_dict()))
-			if Config.TEST or (id is not None and usr.id == id) or (
-					name is not None and name == usr.to_dict()['fullName']):
-				break
 		return users

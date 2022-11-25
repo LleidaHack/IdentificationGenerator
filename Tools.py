@@ -38,14 +38,30 @@ def draw_text(image, text, pos, font, fill, centrate=True, mayus=True):
 	else:
 		ImageDraw.Draw(image).text(pos, text, font=font,fill=fill)
 
-def centrate_text_relative(image, text, font, fill, relative_pos, relative_size, mayus=True):
+def centrate_text_relative(image, text, font, relative_pos, relative_size, mayus=True):
+	#centrate relative on x and split in 2 lines if text width is bigger than relative_size
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
 	w, h = draw.textsize(text, font=font)
 	x = relative_pos[0] + (relative_size[0] - w) / 2
-	y = relative_pos[1] + (relative_size[1] - h) / 2
-	ImageDraw.Draw(image).text((x, y), text, font=font,fill=fill)
+	y = relative_pos[1]
+	if w > relative_size[0]:
+		#split in 2 lines
+		words = text.split(' ')
+		line1 = ''
+		line2 = ''
+		for word in words:
+			if draw.textsize(line1 + ' ' + word, font=font)[0] < relative_size[0]:
+				line1 += ' ' + word
+			else:
+				line2 += ' ' + word
+		x1 = relative_pos[0] + (relative_size[0] - draw.textsize(line1, font=font)[0]) / 2
+		x2 = relative_pos[0] + (relative_size[0] - draw.textsize(line2, font=font)[0]) / 2
+		draw.text((x1, y), line1, font=font)
+		draw.text((x2, y + h), line2, font=font)
+	else:
+		ImageDraw.Draw(image).text((x, y), text, font=font)
 
 def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 	"""
@@ -67,19 +83,15 @@ def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 		back.paste(scaled, (int(offset[0]), int(offset[1])))
 	return back
 
-
 def generate_qr(input, size, border_size):
 	qr = qrcode.QRCode(
 		version=2,
 		error_correction=qrcode.constants.ERROR_CORRECT_H,
-		# box_size=int(size / 25),
 		box_size=size,
 		border=border_size)
 	qr.add_data(input)
 	qr.make(fit=True)
-	# qr = qr.make_image(fill_color=5, back_color=Config.BAK_COLOR)
 	qr = qr.make_image()
-	# qr.show()
 	return qr
 
 
