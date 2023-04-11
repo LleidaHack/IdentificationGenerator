@@ -71,7 +71,7 @@ class Guest(Assistant):
 	__DATA:str = 'guests'
 
 	def __init__(self, name:str, mtype:str='', logo:str='', has_qr:bool=False):
-		super().__init__('HackEPS_Guest_' + str(Guest.__ID), (mtype, Guest.__TYPE)[mtype is ''], name)
+		super().__init__('HackEPS_Guest_' + str(Guest.__ID), (mtype, Guest.__TYPE)[mtype == ''], name)
 		Guest.__ID += 1
 		self.has_qr = has_qr
 		self.logo = logo
@@ -82,13 +82,13 @@ class Guest(Assistant):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back)
-		if self.logo is not '':
+		if self.logo != '':
 			logo = Image.open(self.logopath).convert("RGBA")
 			logo = Tools.scale(logo, Card.QR_SIZE)
 			self.card.paste(logo, Card.QR_POS)
 		elif self.has_qr:
 			self.card.paste(self.qr, Card.QR_POS)
-		if self.name is not '':
+		if self.name != '':
 			Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
 		self.smallen()
 
@@ -106,7 +106,7 @@ class Guest(Assistant):
 
 class Company(Assistant):
 	__ID:int = 1
-	__TYPE:str = 'EMPRESSA'
+	__TYPE:str = 'EMPRESA'
 	__DATA:str = 'companies'
 
 	def __init__(self, name:str, image):
