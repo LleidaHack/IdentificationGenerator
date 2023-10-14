@@ -1,11 +1,13 @@
 import os
 
-import firebase_admin
+# import firebase_admin
 from PIL import Image
-from firebase_admin import firestore
+# from firebase_admin import firestore
 
 import Config
 import Tools
+
+from api_connector import get_accepted
 
 
 class Card:
@@ -30,6 +32,7 @@ class Assistant(object):
 		self.name = name
 		self.card = None
 		self.qr = None
+		self.code = None
 
 	def show(self):
 		self.card.show()
@@ -38,7 +41,10 @@ class Assistant(object):
 		self.card.save(os.path.join(Config.OUT_PATH, str(self.id) + '.png'))
 
 	def generate_qr(self, crypt_id=False):
-		self.qr = Tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		if self.code:
+			self.qr = Tools.generate_qr(self.code, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		else:
+			self.qr = Tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
@@ -226,7 +232,7 @@ class Organizer(Assistant):
 				break
 		return res
 
-
+import PrivateConfig
 class Contestant(Assistant):
 	__CRYPT_ID = False
 	__TYPE:str = 'HACKER'
@@ -235,8 +241,9 @@ class Contestant(Assistant):
 
 	def __init__(self, id, data):
 		super().__init__(id, Contestant.__TYPE)
+		self.code = data['code']
 		self.generate_qr()
-		self.name = data['fullName']
+		self.name = data['name']
 		self.nick = '\"' + data['nickname'] + '\"'
 		if Config.TEST:
 			Contestant.__FIRE_PATH = Config.DB_PATH_T
@@ -255,15 +262,17 @@ class Contestant(Assistant):
 
 	@staticmethod
 	def get_data(id=None, name=None):
-		cred = firebase_admin.credentials.Certificate(Config.DB_CERT_PATH)
-		Contestant.__firebase_init(cred)
-		db = firestore.client()
-		users_ref = db.collection(Contestant.__FIRE_PATH)
-		usrs = users_ref.stream()
+		# cred = firebase_admin.credentials.Certificate(Config.DB_CERT_PATH)
+		# Contestant.__firebase_init(cred)
+		# db = firestore.client()
+		# users_ref = db.collection(Contestant.__FIRE_PATH)
+		# usrs = users_ref.stream()
+		usrs = get_accepted()
 		users = []
 		for usr in usrs:
 			if ((id is None and name is None) 
-				or (id is not None and usr.id == id) 
-				or (name is not None and name == usr.to_dict()['fullName'])):
-				users.append(Contestant(usr.id, usr.to_dict()))
+				or (id is not None and usr['id'] == id) 
+				or (name is not None and name == usr.name)):
+				# or (name is not None and name == usr.to_dict()['fullName'])):
+				users.append(Contestant(usr['id'], usr))
 		return users
