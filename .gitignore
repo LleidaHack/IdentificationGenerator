@@ -3,7 +3,9 @@ resources/*_firebase_cert.json
 resources/editions/*/data.json
 _out_/
 *.pdf
-
+PrivateConfig.py
+.idea/
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
