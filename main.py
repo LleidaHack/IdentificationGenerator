@@ -21,6 +21,7 @@ for u in users:
 	u.generate_card()
 	u.save()
 	i+=1
-	break
+	if i == 10:
+		break
 
 print('Generated ' + str(i) + ' cards')
