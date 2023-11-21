@@ -32,7 +32,7 @@ for index, imageFile in enumerate(imagelist):
     if index % 9 == 0:
         pdf.add_page(orientation=orientation)
 
-    pdf.image(imageFile, 90.2 * (index%3), 61.1*((index//3)%3), width, height)
+    pdf.image(imageFile, 7+(width+1) * (index%3), 7+(height+1)*((index//3)%3), width, height)
 
 
 pdf.output(image_directory + "file.pdf", "F")
