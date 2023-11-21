@@ -1,22 +1,24 @@
 import os
 
-import firebase_admin
+# import firebase_admin
 from PIL import Image
-from firebase_admin import firestore
+# from firebase_admin import firestore
 
 import Config
 import Tools
 
+from api_connector import get_accepted
+
 
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (450, 78)
-	_QR_SIZE = 267
+	QR_POS = (72, 315)
+	_QR_SIZE = 331
 	QR_SIZE = (_QR_SIZE, _QR_SIZE)
-	QR_BORDER_SIZE = 0
-	TYPE_POS = (0, 475)
-	NAME_POS = (QR_POS[0], 370)
-	NICK_POS = (1198, 870)
+	QR_BORDER_SIZE = 2
+	TYPE_POS = (984, 150)
+	NAME_POS = (984, 40)
+	NICK_POS = (984, 40)
 
 
 class Assistant(object):
@@ -30,6 +32,7 @@ class Assistant(object):
 		self.name = name
 		self.card = None
 		self.qr = None
+		self.code = None
 
 	def show(self):
 		self.card.show()
@@ -38,16 +41,20 @@ class Assistant(object):
 		self.card.save(os.path.join(Config.OUT_PATH, str(self.id) + '.png'))
 
 	def generate_qr(self, crypt_id=False):
-		self.qr = Tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		if self.code:
+			self.qr = Tools.generate_qr(self.code, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
+		else:
+			self.qr = Tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = Tools.scale(self.qr, Card.QR_SIZE, False)
 
-	def generate_card(self, rgb_back=(255, 255, 255)):
-		self.card = Image.open(Config.BAK_PATH)
-		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.WHITE_FONT_COLOR)
+	def generate_card(self, rgb_back=(255, 255, 255), template=Config.BAK_PATH_CONTESTANT):
+		self.card = Image.open(template)
+		Tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
 		if self.type == '':
 			self.smallen()
 
 	def smallen(self):
+		return
 		blank = Image.new('RGB', (1082, 782),(255,255,255))
 		blank.paste(self.card, (0, 0))
 		self.card = blank
@@ -67,7 +74,7 @@ class Assistant(object):
 
 class Guest(Assistant):
 	__ID:int = 1
-	__TYPE:str = 'CONVIDAT'
+	__TYPE:str = 'Convidat'
 	__DATA:str = 'guests'
 
 	def __init__(self, name:str, mtype:str='', logo:str='', has_qr:bool=False):
@@ -81,7 +88,7 @@ class Guest(Assistant):
 			self.logopath = os.path.join(Config.RES_PATH, Config.EDITIONS_FOLDER, Config.EDITION, 'images', logo)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_STAFF)
 		if self.logo != '':
 			logo = Image.open(self.logopath).convert("RGBA")
 			logo = Tools.scale(logo, Card.QR_SIZE)
@@ -89,7 +96,7 @@ class Guest(Assistant):
 		elif self.has_qr:
 			self.card.paste(self.qr, Card.QR_POS)
 		if self.name != '':
-			Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+			Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod
@@ -106,7 +113,7 @@ class Guest(Assistant):
 
 class Company(Assistant):
 	__ID:int = 1
-	__TYPE:str = 'EMPRESA'
+	__TYPE:str = 'Empresa'
 	__DATA:str = 'companies'
 
 	def __init__(self, name:str, image):
@@ -115,11 +122,11 @@ class Company(Assistant):
 		self.logopath = os.path.join(Config.RES_PATH, Config.EDITIONS_FOLDER, Config.EDITION, 'images', image)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_EMPRESA)
 		image = Image.open(self.logopath).convert("RGBA")  # .resize((550,350), Image.ANTIALIAS)
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod
@@ -140,7 +147,7 @@ class Company(Assistant):
 class Volunteer(Assistant):
 	__ID:int = 1
 	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE:str = 'VOLUNTARI/A'
+	__TYPE:str = 'Voluntari/a'
 	__DATA:str = 'volunteers'
 
 	def __init__(self, name:str):
@@ -148,11 +155,11 @@ class Volunteer(Assistant):
 		Volunteer.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_STAFF)
 		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod
@@ -169,7 +176,7 @@ class Volunteer(Assistant):
 class Mentor(Assistant):
 	__ID:int = 1
 	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE:str = 'MENTOR/A'
+	__TYPE:str = 'Mentor/a'
 	__DATA:str = 'mentors'
 
 	def __init__(self, name:str):
@@ -177,11 +184,11 @@ class Mentor(Assistant):
 		Mentor.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_STAFF)
 		image = Image.open(Mentor.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod
@@ -198,7 +205,7 @@ class Mentor(Assistant):
 class Organizer(Assistant):
 	__ID:int = 1
 	__LOGO_PATH:str = os.path.join(Config.RES_PATH, 'editions', Config.EDITION, 'images', 'logogran.png')
-	__TYPE:str = 'ORGANIZACIÓ'
+	__TYPE:str = 'Staff'
 	__DATA:str = 'organizers'
 
 	def __init__(self, name):
@@ -206,11 +213,11 @@ class Organizer(Assistant):
 		Organizer.__ID += 1
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_STAFF)
 		image = Image.open(Organizer.__LOGO_PATH).convert("RGBA")
 		image = Tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		# Tools.draw_text(self.card, self.name, Card.NAME_POS, Config.NAME_FONT, Config.WHITE_FONT_COLOR, False)
 		self.smallen()
 
@@ -226,25 +233,26 @@ class Organizer(Assistant):
 				break
 		return res
 
-
+import PrivateConfig
 class Contestant(Assistant):
 	__CRYPT_ID = False
-	__TYPE:str = 'HACKER'
+	__TYPE:str = 'Hacker'
 	__FIREBASE = None
 	__FIRE_PATH:str = Config.DB_PATH_T if Config.TEST else Config.DB_PATH
 
 	def __init__(self, id, data):
 		super().__init__(id, Contestant.__TYPE)
+		self.code = data['code']
 		self.generate_qr()
-		self.name = data['fullName']
+		self.name = data['name']
 		self.nick = '\"' + data['nickname'] + '\"'
 		if Config.TEST:
 			Contestant.__FIRE_PATH = Config.DB_PATH_T
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back)
+		super().generate_card(rgb_back, Config.BAK_PATH_CONTESTANT)
 		self.card.paste(self.qr, Card.QR_POS)
-		Tools.centrate_text_relative(self.card, self.name,Config.NAME_FONT, Card.NAME_POS, Card.QR_SIZE)
+		Tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(), Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod
@@ -255,15 +263,17 @@ class Contestant(Assistant):
 
 	@staticmethod
 	def get_data(id=None, name=None):
-		cred = firebase_admin.credentials.Certificate(Config.DB_CERT_PATH)
-		Contestant.__firebase_init(cred)
-		db = firestore.client()
-		users_ref = db.collection(Contestant.__FIRE_PATH)
-		usrs = users_ref.stream()
+		# cred = firebase_admin.credentials.Certificate(Config.DB_CERT_PATH)
+		# Contestant.__firebase_init(cred)
+		# db = firestore.client()
+		# users_ref = db.collection(Contestant.__FIRE_PATH)
+		# usrs = users_ref.stream()
+		usrs = get_accepted()
 		users = []
 		for usr in usrs:
 			if ((id is None and name is None) 
-				or (id is not None and usr.id == id) 
-				or (name is not None and name == usr.to_dict()['fullName'])):
-				users.append(Contestant(usr.id, usr.to_dict()))
+				or (id is not None and usr['id'] == id) 
+				or (name is not None and name == usr.name)):
+				# or (name is not None and name == usr.to_dict()['fullName'])):
+				users.append(Contestant(usr['id'], usr))
 		return users

@@ -28,40 +28,40 @@ def empty_dir(path, delete_files=True, delete_dirs=True):
 					os.remove(os.path.join(root, dir))
 
 
-def draw_text(image, text, pos, font, fill, centrate=True, mayus=True):
+def draw_text(image, text, pos, font, fill, centrate=True, mayus=False):
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
 	w, h = draw.textsize(text, font=font)
 	if centrate:
-		ImageDraw.Draw(image).text(((image.width-w)/2, pos[1]), text, font=font,fill=fill)
+		ImageDraw.Draw(image).text((pos[0]-w, pos[1]), text, font=font,fill=fill)
 	else:
 		ImageDraw.Draw(image).text(pos, text, font=font,fill=fill)
 
-def centrate_text_relative(image, text, font, relative_pos, relative_size, mayus=True):
+def centrate_text_relative(image, text, font, relative_pos, relative_size, fill, mayus=False):
 	#centrate relative on x and split in 2 lines if text width is bigger than relative_size
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
 	w, h = draw.textsize(text, font=font)
-	x = relative_pos[0] + (relative_size[0] - w) / 2
+	x = relative_pos[0] - w
 	y = relative_pos[1]
-	if w > relative_size[0]:
-		#split in 2 lines
-		words = text.split(' ')
-		line1 = ''
-		line2 = ''
-		for word in words:
-			if draw.textsize(line1 + ' ' + word, font=font)[0] < relative_size[0]:
-				line1 += ' ' + word
-			else:
-				line2 += ' ' + word
-		x1 = relative_pos[0] + (relative_size[0] - draw.textsize(line1, font=font)[0]) / 2
-		x2 = relative_pos[0] + (relative_size[0] - draw.textsize(line2, font=font)[0]) / 2
-		draw.text((x1, y), line1, font=font)
-		draw.text((x2, y + h), line2, font=font)
-	else:
-		ImageDraw.Draw(image).text((x, y), text, font=font)
+	# if w > relative_size[0]:
+	# 	#split in 2 lines
+	# 	words = text.split(' ')
+	# 	line1 = ''
+	# 	line2 = ''
+	# 	for word in words:
+	# 		if draw.textsize(line1 + ' ' + word, font=font)[0] < relative_size[0]:
+	# 			line1 += ' ' + word
+	# 		else:
+	# 			line2 += ' ' + word
+	# 	x1 = relative_pos[0] + (relative_size[0] - draw.textsize(line1, font=font)[0]) / 2
+	# 	x2 = relative_pos[0] + (relative_size[0] - draw.textsize(line2, font=font)[0]) / 2
+	# 	draw.text((x1, y), line1, font=font)
+	# 	draw.text((x2, y + h), line2, font=font)
+	# else:
+	ImageDraw.Draw(image).text((x, y), text, font=font, fill=fill)
 
 def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
 	"""
