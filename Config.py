@@ -22,11 +22,11 @@ DATA_PATH = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, DATA_FILE)
 DB_CERT = '2019_firebase_cert.json'
 DB_CERT_PATH = path.join(RES_PATH, DB_CERT)
 
-BAK_FILE_CONTESTANT = 'plantilles\\participant.png'
+BAK_FILE_CONTESTANT = path.join('plantilles','participant.png')
 BAK_PATH_CONTESTANT = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE_CONTESTANT)
-BAK_FILE_STAFF = 'plantilles\\organitzador.png'
+BAK_FILE_STAFF = path.join('plantilles','organitzador.png')
 BAK_PATH_STAFF = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE_STAFF)
-BAK_FILE_EMPRESA = 'plantilles\\patrocinador.png'
+BAK_FILE_EMPRESA = path.join('plantilles','patrocinador.png')
 BAK_PATH_EMPRESA = path.join(RES_PATH, EDITIONS_FOLDER, EDITION, BAK_FILE_EMPRESA)
 
 FONT_FOLDER = 'fonts'

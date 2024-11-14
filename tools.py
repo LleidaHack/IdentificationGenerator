@@ -32,7 +32,8 @@ def draw_text(image, text, pos, font, fill, centrate=True, mayus=False):
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
-	w, h = draw.textsize(text, font=font)
+	w = draw.textlength(text, font=font)
+	# w, h = draw.textsize(text, font=font)
 	if centrate:
 		ImageDraw.Draw(image).text((pos[0]-w, pos[1]), text, font=font,fill=fill)
 	else:
@@ -43,7 +44,7 @@ def centrate_text_relative(image, text, font, relative_pos, relative_size, fill,
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
-	w, h = draw.textsize(text, font=font)
+	w= draw.textlength(text, font=font)
 	x = relative_pos[0] - w
 	y = relative_pos[1]
 	# if w > relative_size[0]:
@@ -63,7 +64,7 @@ def centrate_text_relative(image, text, font, relative_pos, relative_size, fill,
 	# else:
 	ImageDraw.Draw(image).text((x, y), text, font=font, fill=fill)
 
-def scale(image, max_size, add_mask=True, method=Image.ANTIALIAS):
+def scale(image, max_size, add_mask=True, method=Image.LANCZOS):
 	"""
 	resize 'image' to 'max_size' keeping the aspect ratio
 	and place it in center of white 'max_size' image

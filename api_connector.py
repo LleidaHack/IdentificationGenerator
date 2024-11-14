@@ -15,9 +15,9 @@ def send_request(endpoint: str):
 # some JSON:
 
 # parse x:
-    print(json.loads(r.content)[0]['id'])
+    # print(json.loads(r.content)[0]['id'])
     return (json.loads(r.content))
     return r
 
 def get_accepted():
-    return send_request('/event/1/get_approved_hackers')
+    return send_request('/v1/event/1/get_approved_hackers')

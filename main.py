@@ -1,20 +1,27 @@
 import Config
-import Model
-import Tools
+# import Model
+from models.assistant import Assistant
+from models.company import Company
+from models.contestant import Contestant
+from models.guest import Guest
+from models.mentor import Mentor
+from models.organizer import Organizer
+from models.volunteer import Volunteer
+import tools
 from PIL import Image
 import os
 
 users = []
-users += Model.Contestant.get_data()
-# users += Model.Organizer.get_data()
-# users += Model.Volunteer.get_data()
-# users += Model.Mentor.get_data()
-# users += Model.Company.get_data()
-# users += Model.Guest.get_data()
-# users += Model.Assistant.get_data()
+users += Contestant.get_data()
+# users += Organizer.get_data()
+# users += Volunteer.get_data()
+# users += Mentor.get_data()
+# users += Company.get_data()
+# users += Guest.get_data()
+# users += Assistant.get_data()
 
-Tools.create_dir(Config.OUT_PATH)
-Tools.empty_dir(Config.OUT_PATH)
+tools.create_dir(Config.OUT_PATH)
+tools.empty_dir(Config.OUT_PATH)
 
 i = 0
 for u in users:
