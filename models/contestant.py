@@ -7,7 +7,7 @@ from models.card import Card
 
 class Contestant(Assistant):
 	__CRYPT_ID = False
-	__TYPE:str = 'Hacker'
+	__TYPE:str = 'Participant'
 	__FIREBASE = None
 	__FIRE_PATH:str = Config.DB_PATH_T if Config.TEST else Config.DB_PATH
 
@@ -23,7 +23,7 @@ class Contestant(Assistant):
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		super().generate_card(rgb_back, Config.BAK_PATH_CONTESTANT)
 		self.card.paste(self.qr, Card.QR_POS)
-		tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(), Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
+		tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(), Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.WHITE_FONT_COLOR)
 		self.smallen()
 
 	# @staticmethod

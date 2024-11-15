@@ -1,23 +1,18 @@
-# import http.client
 import requests
 import json
 import PrivateConfig
 
 
-
-def send_request(endpoint: str):
+def send_request(endpoint: str, bearer: bool = True):
     url = PrivateConfig.BASE_URL + endpoint
     headers = {
         "Authorization": "Bearer " + PrivateConfig.SERVICE_TOKEN,
     }
-    r = requests.get(url, headers=headers)
-
-# some JSON:
-
-# parse x:
-    # print(json.loads(r.content)[0]['id'])
+    r = requests.get(url, headers=headers) if bearer else requests.get(url)
     return (json.loads(r.content))
-    return r
+
+def get_hackeps():
+    return send_request("/v1/event/get_hackeps")["id"]
 
 def get_accepted():
-    return send_request('/v1/event/1/get_approved_hackers')
+    return send_request(f'/v1/event/{get_hackeps()}/get_approved_hackers')

@@ -14,10 +14,9 @@ for ext in extensions:
 for index, imageFile in enumerate(imagelist):
     cover = Image.open(imageFile)
     width, height = cover.size
-    print(width, height)
 
     # convert pixel in mm with 1px=0.0847 mm
-    width, height = float(width * 0.0847), float(height * 0.0847)
+    width, height = float(width * 0.0271), float(height * 0.0271)
 
     # given we are working with A4 format size 
     pdf_size = {'P': {'w': 210, 'h': 297}, 'L': {'w': 297, 'h': 210}}

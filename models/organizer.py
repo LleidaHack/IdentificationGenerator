@@ -1,5 +1,5 @@
 import os
-from tkinter import Image
+from PIL import Image
 import Config
 import tools
 from models.assistant import Assistant

@@ -35,7 +35,7 @@ class Assistant(object):
 
 	def generate_card(self, rgb_back=(255, 255, 255), template=Config.BAK_PATH_CONTESTANT):
 		self.card = Image.open(template)
-		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.WHITE_FONT_COLOR)
 		if self.type == '':
 			self.smallen()
 

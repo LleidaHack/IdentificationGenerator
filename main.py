@@ -28,7 +28,8 @@ for u in users:
 	u.generate_card()
 	u.save()
 	i+=1
-	if i == 10:
-		break
+	if Config.TEST:
+		if i == 10:
+			break
 
 print('Generated ' + str(i) + ' cards')
