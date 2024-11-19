@@ -19,12 +19,15 @@ class Company(Assistant):
 	def __init__(self, name:str, image):
 		super().__init__('C' + str(Company.__ID), Company.__TYPE, name)
 		Company.__ID += 1
-		self.logopath = image
+		self.logo = image
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back, Config.BAK_PATH_EMPRESA)
-		image = tools.translate_image(self.logopath)
-		image = tools.scale(image, Card.QR_SIZE, add_mask=False)
+		self.card = Image.open(Config.BAK_PATH_EMPRESA)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
+		if self.type == '':
+			self.smallen()
+		image = tools.translate_image(self.logo)
+		image = tools.scale(image, Card.QR_SIZE, mask_col=(255,204,77))
 		self.card.paste(image, Card.QR_POS)
 		tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
@@ -34,8 +37,6 @@ class Company(Assistant):
 		res = []
 		#data = tools.DataFile.get_content(Company._DATA_FILE, 'JSON')
 		tier1=get_by_tier(1)
-		tier2=get_by_tier(2)
-
 		for comp in tier1:
 			for _ in range(8):
 				if name is None or comp['name'] == name:
@@ -45,6 +46,7 @@ class Company(Assistant):
 			if Config.TEST or (name is not None and comp['name'] == name):
 				break
 	
+		tier2=get_by_tier(2)
 		for comp in tier2:
 			for _ in range(5):
 				if name is None or comp['name'] == name:

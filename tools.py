@@ -67,7 +67,22 @@ def centrate_text_relative(image, text, font, relative_pos, relative_size, fill,
 	# else:
 	ImageDraw.Draw(image).text((x, y), text, font=font, fill=fill)
 
-def scale(image, max_size, add_mask=True, method=Image.LANCZOS):
+def has_transparency(img):
+    if img.info.get("transparency", None) is not None:
+        return True
+    if img.mode == "P":
+        transparent = img.info.get("transparency", -1)
+        for _, index in img.getcolors():
+            if index == transparent:
+                return True
+    elif img.mode == "RGBA":
+        extrema = img.getextrema()
+        if extrema[3][0] < 255:
+            return True
+
+    return False
+
+def scale(image, max_size, mask_col=Config.BAK_COLOR,method=Image.LANCZOS):
 	"""
 	resize 'image' to 'max_size' keeping the aspect ratio
 	and place it in center of white 'max_size' image
@@ -80,9 +95,13 @@ def scale(image, max_size, add_mask=True, method=Image.LANCZOS):
 		scaled = image.resize((int((float(max_size[1]) * im_aspect) + 0.5), max_size[1]), method)
 
 	offset = (((max_size[0] - scaled.size[0]) / 2), ((max_size[1] - scaled.size[1]) / 2))
-	back = Image.new("RGBA", max_size, Config.BAK_COLOR)
-	if add_mask:
-		back.paste(scaled, (int(offset[0]), int(offset[1])), scaled)
+	back = Image.new("RGBA", max_size, mask_col)
+	if has_transparency(image):
+		try:
+			back.paste(scaled, (int(offset[0]), int(offset[1])), scaled)
+		except:
+			scaled = scaled.convert("RGBA")
+			back.paste(scaled, (int(offset[0]), int(offset[1])), scaled)
 	else:
 		back.paste(scaled, (int(offset[0]), int(offset[1])))
 	return back
