@@ -21,7 +21,10 @@ class Guest(Assistant):
 			self.logopath = os.path.join(Config.RES_PATH, Config.EDITIONS_FOLDER, Config.EDITION, 'images', logo)
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
-		super().generate_card(rgb_back, Config.BAK_PATH_STAFF)
+		self.card = Image.open(Config.BAK_PATH_STAFF)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
+		if self.type == '':
+			self.smallen()
 		if self.logo != '':
 			logo = Image.open(self.logopath).convert("RGBA")
 			logo = tools.scale(logo, Card.QR_SIZE)

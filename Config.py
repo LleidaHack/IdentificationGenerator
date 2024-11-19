@@ -46,4 +46,4 @@ BOLD_NAME_FONT = ImageFont.truetype(BOLD_FONT_PATH, NAME_FONT_SIZE)
 # FONT = ImageFont.truetype("Symbola.ttf", 60, encoding='unic')
 
 MAIN_COLOR = (31, 33, 36)
-BAK_COLOR = (247, 247, 242)
+BAK_COLOR = (196, 222, 211)

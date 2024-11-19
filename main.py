@@ -11,14 +11,14 @@ import tools
 from PIL import Image
 import os
 
-users = []
-users += Contestant.get_data()
-# users += Organizer.get_data()
-# users += Volunteer.get_data()
-# users += Mentor.get_data()
-# users += Company.get_data()
-# users += Guest.get_data()
-# users += Assistant.get_data()
+users:list[Assistant] = []
+#users += Contestant.get_data()
+#users += Organizer.get_data()
+#users += Volunteer.get_data()
+#users += Mentor.get_data()
+users += Company.get_data()
+#users += Guest.get_data()
+#users += Assistant.get_data()
 
 tools.create_dir(Config.OUT_PATH)
 tools.empty_dir(Config.OUT_PATH)

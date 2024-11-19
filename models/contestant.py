@@ -40,11 +40,15 @@ class Contestant(Assistant):
 		# users_ref = db.collection(Contestant.__FIRE_PATH)
 		# usrs = users_ref.stream()
 		usrs = get_accepted()
-		users = []
-		for usr in usrs:
-			if ((id is None and name is None) 
-				or (id is not None and usr['id'] == id) 
-				or (name is not None and name == usr.name)):
-				# or (name is not None and name == usr.to_dict()['fullName'])):
-				users.append(Contestant(usr['id'], usr))
+
+		users = [
+		    Contestant(usr['id'], usr) 
+		    for usr in usrs 
+		    if (
+		        (id is None and name is None) 
+		        or (id is not None and usr['id'] == id) 
+		        or (name is not None and name == usr['name'])
+		    )
+		]
+
 		return users

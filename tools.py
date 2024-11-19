@@ -1,9 +1,12 @@
+from base64 import b64decode
 import hashlib
+from io import BytesIO
 import json
 import os
 
 import qrcode
 from PIL import ImageDraw, Image
+import requests
 import Config
 
 
@@ -129,3 +132,11 @@ class DataFile:
 	@staticmethod
 	def clear_cache():
 		DataFile.__contents = {}
+
+
+def translate_image(image) -> Image:
+	if image[:4] == "http":
+		return Image.open(BytesIO(requests.get(image).content),)
+	else:
+		base64 = b64decode(image.split(",")[-1])
+		return Image.open(BytesIO(base64))

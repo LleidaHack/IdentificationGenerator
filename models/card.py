@@ -1,6 +1,6 @@
 class Card:
 	QR_PIX_SIZE = 1
-	QR_POS = (711*3, 315*3-int(333/3))
+	QR_POS = (711*3, 315*3-333//3)
 	_QR_SIZE = 331*3
 	QR_SIZE = (_QR_SIZE, _QR_SIZE)
 	QR_BORDER_SIZE = 2

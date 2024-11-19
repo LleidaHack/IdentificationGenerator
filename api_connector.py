@@ -16,3 +16,6 @@ def get_hackeps():
 
 def get_accepted():
     return send_request(f'/v1/event/{get_hackeps()}/get_approved_hackers')
+
+def get_by_tier(tier):
+    return send_request(f'/v1/company/tier/{tier}/')
