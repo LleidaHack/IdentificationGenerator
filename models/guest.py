@@ -41,7 +41,7 @@ class Guest(Assistant):
 		data = tools.DataFile.get_content(Guest._DATA_FILE, 'JSON')
 		for u in data[Guest.__DATA]:
 			if name is None or u['name'] == name:
-				res.append(Guest(u['name'], u['type'], '', u['qr']))
+				res.append(Guest(u['name'], u['type'], u['logo'], u['qr']))
 			if Config.TEST or (name is not None and u['name'] == name):
 				break
 		return res
