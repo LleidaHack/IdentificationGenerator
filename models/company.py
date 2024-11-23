@@ -29,7 +29,7 @@ class Company(Assistant):
 		image = tools.translate_image(self.logo)
 		image = tools.scale(image, Card.QR_SIZE, mask_col=(255,204,77))
 		self.card.paste(image, Card.QR_POS)
-		tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
+		tools.centrate_text_relative(self.card, self.name.strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
 
 	@staticmethod

@@ -31,7 +31,6 @@ class Organizer(Assistant):
 	@staticmethod
 	def get_data(name=None):
 		res = []
-		print(Organizer._DATA_FILE)
 		data = tools.DataFile.get_content(Organizer._DATA_FILE, 'JSON')
 		for u in data[Organizer.__DATA]:
 			if name is None or u['name'] == name:
