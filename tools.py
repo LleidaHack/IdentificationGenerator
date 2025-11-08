@@ -154,8 +154,66 @@ class DataFile:
 
 
 def translate_image(image) -> Image:
-	if image[:4] == "http":
-		return Image.open(BytesIO(requests.get(image).content))
-	else:
-		base64 = b64decode(image.split(",")[-1])
-		return Image.open(BytesIO(base64))
+	# handle bytes directly
+	if isinstance(image, (bytes, bytearray)):
+		return Image.open(BytesIO(image))
+
+	s = str(image)
+	# remote URL
+	if s[:4].lower() == "http":
+		resp = requests.get(s, timeout=10)
+		try:
+			resp.raise_for_status()
+		except Exception as e:
+			raise RuntimeError(f"Failed to download image from URL {s}: {e}")
+
+		ct = resp.headers.get('Content-Type', '').lower()
+		content = resp.content
+
+		# handle SVG responses specifically (PIL doesn't support SVG)
+		if 'svg' in ct or (content.lstrip().startswith(b'<') and b'<svg' in content[:200].lower()):
+			try:
+				import cairosvg
+				png_bytes = cairosvg.svg2png(bytestring=content)
+				return Image.open(BytesIO(png_bytes))
+			except Exception as e:
+				# if the problem is missing native cairo library, provide a fallback placeholder image
+				msg = str(e)
+				if isinstance(e, OSError) or 'no library called' in msg.lower() or 'cannot load library' in msg.lower():
+					# create a simple placeholder image (RGBA) so downstream code can continue
+					placeholder = Image.new('RGBA', (200, 200), (220, 220, 220, 255))
+					return placeholder
+				# otherwise raise a descriptive error
+				raise RuntimeError(f"Failed to convert SVG to PNG for {s}: {e}")
+
+		# try to open the response content as an image
+		try:
+			return Image.open(BytesIO(content))
+		except Exception:
+			# provide useful debug info when PIL can't identify the bytes
+			raise RuntimeError(f"Downloaded content from {s} is not a valid raster image (Content-Type: {ct})")
+
+	# data URI (base64)
+	if s.startswith('data:'):
+		try:
+			base64 = b64decode(s.split(",")[-1])
+			return Image.open(BytesIO(base64))
+		except Exception as e:
+			raise RuntimeError(f"Invalid data URI for image: {e}")
+
+	# local file path
+	if os.path.exists(s):
+		try:
+			return Image.open(s)
+		except Exception as e:
+			raise RuntimeError(f"Found file {s} but PIL cannot open it as image: {e}")
+
+	# try relative to current working directory
+	possible = os.path.join(os.getcwd(), s)
+	if os.path.exists(possible):
+		try:
+			return Image.open(possible)
+		except Exception as e:
+			raise RuntimeError(f"Found file {possible} but PIL cannot open it as image: {e}")
+
+	raise FileNotFoundError(f"Image reference not recognized as URL, data URI, or existing file: {s}")

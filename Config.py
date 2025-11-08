@@ -3,7 +3,7 @@ from PIL import ImageFont
 
 TEST = False
 
-EDITION='2024'
+EDITION='2025'
 EDITIONS_FOLDER = 'editions'
 
 DB_PATH_T = 'hackeps-'+EDITION+'/dev/users'
