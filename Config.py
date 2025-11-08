@@ -1,7 +1,7 @@
 from os import path
 from PIL import ImageFont
 
-TEST = False
+TEST = True
 
 EDITION='2025'
 EDITIONS_FOLDER = 'editions'
