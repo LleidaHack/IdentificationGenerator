@@ -4,6 +4,6 @@ class Card:
 	_QR_SIZE = 331*1
 	QR_SIZE = (_QR_SIZE, _QR_SIZE)
 	QR_BORDER_SIZE = 2
-	TYPE_POS = (1063*(2/4), 720*(0.8/5))
-	NAME_POS = (1063*(2/4), 720*(0.2/5))
+	TYPE_POS = (1063*(1/2), 720*(0.8/5))
+	NAME_POS = (1063*(1/2), 720*(0.2/5))
 	NICK_POS = (1063*(2/4), 720*(2/5))

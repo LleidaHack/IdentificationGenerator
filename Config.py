@@ -1,7 +1,7 @@
 from os import path
 from PIL import ImageFont
 
-TEST = True
+TEST = False
 
 EDITION='2025'
 EDITIONS_FOLDER = 'editions'
@@ -35,9 +35,9 @@ BOLD_FONT_FILE = 'SpaceMono-Bold.ttf'
 FONT_PATH = path.join(RES_PATH, FONT_FOLDER, FONT_FILE)
 BOLD_FONT_PATH = path.join(RES_PATH, FONT_FOLDER, BOLD_FONT_FILE)
 TYPE_FONT_SIZE = 40
-NAME_FONT_SIZE = 70
+NAME_FONT_SIZE = 60
 FONT_COLOR = (0,0,0)
-WHITE_FONT_COLOR = (255,255,255)
+WHITE_FONT_COLOR = (84,49,26)
 DARK_FONT_COLOR = (35,35,35)
 BROWN_COLOR = (101, 67, 33)
 TYPE_FONT = ImageFont.truetype(FONT_PATH, TYPE_FONT_SIZE)
@@ -47,6 +47,4 @@ BOLD_NAME_FONT = ImageFont.truetype(BOLD_FONT_PATH, NAME_FONT_SIZE)
 # FONT = ImageFont.truetype("Symbola.ttf", 60, encoding='unic')
 
 MAIN_COLOR = (31, 33, 36)
-BAK_COLOR = (196, 222, 211)
-QR_FILL_COLOR = (0, 0, 0)
-QR_BACK_COLOR = (255, 255, 255)
+BAK_COLOR = (119, 177, 201)

@@ -36,19 +36,21 @@ def draw_text(image, text, pos, font, fill, centrate=True, mayus=False):
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
 	w = draw.textlength(text, font=font)
-	# w, h = draw.textsize(text, font=font)
+	# Center horizontally around pos[0] when centrate=True
 	if centrate:
-		ImageDraw.Draw(image).text((pos[0]-w, pos[1]), text, font=font,fill=fill)
+		x = pos[0] - (w / 2)
+		ImageDraw.Draw(image).text((x, pos[1]), text, font=font, fill=fill)
 	else:
-		ImageDraw.Draw(image).text(pos, text, font=font,fill=fill)
+		ImageDraw.Draw(image).text(pos, text, font=font, fill=fill)
 
 def centrate_text_relative(image, text, font, relative_pos, relative_size, fill, mayus=False):
 	#centrate relative on x and split in 2 lines if text width is bigger than relative_size
 	if mayus:
 		text = text.upper()
 	draw = ImageDraw.Draw(image)
-	w= draw.textlength(text, font=font)
-	x = relative_pos[0] - w
+	w = draw.textlength(text, font=font)
+	# center the text horizontally around relative_pos[0]
+	x = relative_pos[0] - (w / 2)
 	y = relative_pos[1]
 	# if w > relative_size[0]:
 	# 	#split in 2 lines
@@ -193,13 +195,41 @@ def translate_image(image) -> Image:
 			# provide useful debug info when PIL can't identify the bytes
 			raise RuntimeError(f"Downloaded content from {s} is not a valid raster image (Content-Type: {ct})")
 
-	# data URI (base64)
+	# data URI (base64 or plain)
 	if s.startswith('data:'):
+		# split header and payload
 		try:
-			base64 = b64decode(s.split(",")[-1])
-			return Image.open(BytesIO(base64))
+			header, payload = s.split(',', 1)
+		except Exception:
+			raise RuntimeError('Invalid data URI format')
+
+		is_base64 = ';base64' in header.lower()
+		is_svg = 'svg' in header.lower()
+
+		# get raw bytes (if not base64, treat payload as utf-8 text)
+		try:
+			data_bytes = b64decode(payload) if is_base64 else payload.encode('utf-8')
 		except Exception as e:
-			raise RuntimeError(f"Invalid data URI for image: {e}")
+			raise RuntimeError(f'Invalid base64 data in data URI: {e}')
+
+		# if SVG, convert to PNG (cairosvg) or fallback
+		if is_svg or (data_bytes.lstrip().startswith(b'<') and b'<svg' in data_bytes[:200].lower()):
+			try:
+				import cairosvg
+				png_bytes = cairosvg.svg2png(bytestring=data_bytes)
+				return Image.open(BytesIO(png_bytes))
+			except Exception as e:
+				msg = str(e)
+				if isinstance(e, OSError) or 'no library called' in msg.lower() or 'cannot load library' in msg.lower():
+					placeholder = Image.new('RGBA', (200, 200), (220, 220, 220, 255))
+					return placeholder
+				raise RuntimeError(f'Failed to convert SVG data URI to PNG: {e}')
+
+		# otherwise try to open as raster image
+		try:
+			return Image.open(BytesIO(data_bytes))
+		except Exception as e:
+			raise RuntimeError(f'Invalid data URI image content: {e}')
 
 	# local file path
 	if os.path.exists(s):
