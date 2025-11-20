@@ -14,13 +14,13 @@ PIXEL_TO_MM = 0.0847
 IMAGES_PER_ROW = 3
 IMAGES_PER_COL = 3
 # Page margins (mm) and gap between images (mm)
-MARGIN_MM = 7
-GAP_MM = 0.5
+MARGIN_MM = 0
+GAP_MM = 1
 # Target badge size (mm) — set to your measured lanyard size
-TARGET_WIDTH_MM = 90
-TARGET_HEIGHT_MM = 65
+TARGET_WIDTH_MM = 95
+TARGET_HEIGHT_MM = 70
 # If True, compute IMAGES_PER_ROW / IMAGES_PER_COL automatically based on the target and page size
-AUTO_LAYOUT = True
+AUTO_LAYOUT = False
 # How much of the target area the image should fill (0.0-1.0)
 CELL_FILL = 0.95
 # Allow upscaling images if they're smaller than the target
