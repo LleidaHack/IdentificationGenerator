@@ -1,7 +1,32 @@
 {
   "empty": 5,
   "organizers": [
-    {"name":"Ton Llucià Senserrich"}
+    {"name":"Pol Llinàs"},
+    {"name":"Naïm Saadi"},
+    {"name":"Lluc Vivet"},
+    {"name":"Lotfi Bouakel (LOLO)"},
+    {"name":"Ton Llucià "},
+    {"name":"Joel Ros "},
+    {"name":"Gerard Tersa "},
+    {"name":"Alba Serrano "},
+    {"name":"Aida Chavero "},
+    {"name":"Martina López "},
+    {"name":"Anaïs Garrofé "},
+    {"name":"Júlia Calvo "},
+    {"name":"Aleix Rosinach "},
+    {"name":"Andreu Puig-gròs "},
+    {"name":"Enric Zhang "},
+    {"name":"David Garcia "},
+    {"name":"Nataly Jaya "},
+    {"name":"Toni López "},
+    {"name":"Òscar van de Crommert"},
+    {"name":"Carles Sànchez"},
+    {"name":"Gerard Ballebrera"},
+    {"name":"Albert Sorribes"},
+    {"name":"Bru Pallàs "},
+    {"name":"Norbert Aguilera"},
+    {"name":"Aleix Bertran"}
+
   ],
   "volunteers": [
     {"name":"Ton Llucià Senserrich"}
@@ -11,5 +36,18 @@
   ],
   "guests": [
     {"name":"Ton Llucià Senserrich","type":"HACKER","qr":true}
+  ],
+  "mentors": [
+    {"name":"David Sarrat","qr":true},
+    {"name":"Sergi Vila","qr":true},
+    {"name":"Alba Lamas","qr":true},
+    {"name":"Josep","qr":true},
+    {"name":"Jordi Onrubia","qr":true},
+    {"name":"Cangrejo #1"},
+    {"name":"Cangrejo #2"},
+    {"name":"Cangrejo #3"},
+    {"name":"ivansaureu15"},
+    {"name":"Josep Maria Salvia"},
+    {"name":"Salce"}
   ]
 }

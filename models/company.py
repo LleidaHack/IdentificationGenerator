@@ -22,12 +22,13 @@ class Company(Assistant):
 		self.logo = image
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
+		print("Generating card for company:", self.name)
 		self.card = Image.open(Config.BAK_PATH_EMPRESA)
 		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
 		if self.type == '':
 			self.smallen()
 		image = tools.translate_image(self.logo)
-		image = tools.scale(image, Card.QR_SIZE, mask_col=(255,204,77))
+		image = tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
 		tools.centrate_text_relative(self.card, self.name.strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
 		self.smallen()
@@ -48,6 +49,16 @@ class Company(Assistant):
 	
 		tier2=get_by_tier(2)
 		for comp in tier2:
+			for _ in range(5):
+				if name is None or comp['name'] == name:
+					res.append(Company(comp['name'], comp['image']))
+				if Config.TEST:
+					break
+			if Config.TEST or (name is not None and comp['name'] == name):
+				break
+
+		tier3=get_by_tier(3)
+		for comp in tier3:
 			for _ in range(5):
 				if name is None or comp['name'] == name:
 					res.append(Company(comp['name'], comp['image']))
