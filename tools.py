@@ -10,25 +10,7 @@ import requests
 import Config
 
 
-def create_dir(path):
-	exists = os.path.isdir(path)
-	if not exists:
-		try:
-			os.mkdir(path)
-		except OSError:
-			raise OSError('dir creation error')
 
-
-def empty_dir(path, delete_files=True, delete_dirs=True):
-	exists = os.path.isdir(path)
-	if exists and (delete_files or delete_dirs):
-		for root, dirs, files in os.walk(path):
-			if delete_files:
-				for file in files:
-					os.remove(os.path.join(root, file))
-			if delete_dirs:
-				for dir in dirs:
-					os.remove(os.path.join(root, dir))
 
 
 def draw_text(image, text, pos, font, fill, centrate=True, mayus=False):

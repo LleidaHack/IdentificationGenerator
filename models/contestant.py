@@ -1,6 +1,6 @@
 import Config
 import tools
-from api_connector import get_accepted
+
 from models.assistant import Assistant
 from models.card import Card
 
@@ -32,23 +32,4 @@ class Contestant(Assistant):
 	# 		Contestant.__FIREBASE = firebase_admin.initialize_app(cred)
 	# 	return Contestant.__FIREBASE
 
-	@staticmethod
-	def get_data(id=None, name=None):
-		# cred = firebase_admin.credentials.Certificate(Config.DB_CERT_PATH)
-		# Contestant.__firebase_init(cred)
-		# db = firestore.client()
-		# users_ref = db.collection(Contestant.__FIRE_PATH)
-		# usrs = users_ref.stream()
-		usrs = get_accepted()
 
-		users = [
-		    Contestant(usr['id'], usr) 
-		    for usr in usrs 
-		    if (
-		        (id is None and name is None) 
-		        or (id is not None and usr['id'] == id) 
-		        or (name is not None and name == usr['name'])
-		    )
-		]
-
-		return users
