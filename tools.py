@@ -7,7 +7,7 @@ import os
 import qrcode
 from PIL import ImageDraw, Image
 import requests
-import Config
+from config.constants import BAK_COLOR
 
 
 
@@ -66,7 +66,7 @@ def has_transparency(img):
 
     return False
 
-def scale(image, max_size, mask_col=Config.BAK_COLOR,method=Image.LANCZOS):
+def scale(image, max_size, mask_col=BAK_COLOR, method=Image.LANCZOS):
 	"""
 	resize 'image' to 'max_size' keeping the aspect ratio
 	and place it in center of white 'max_size' image

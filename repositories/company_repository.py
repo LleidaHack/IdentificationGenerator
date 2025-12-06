@@ -1,7 +1,8 @@
 from typing import List
-from models.company import Company
+
 from services.api_service import APIService
-import Config
+from config.settings import settings
+from models.company import Company
 
 class CompanyRepository:
     def __init__(self, api_service: APIService):
@@ -16,8 +17,8 @@ class CompanyRepository:
             for comp in comps:
                 for _ in range(count):
                     res.append(Company(comp['name'], comp['image']))
-                    if Config.TEST:
+                    if settings.TEST:
                         break
-                if Config.TEST:
+                if settings.TEST:
                     break
         return res

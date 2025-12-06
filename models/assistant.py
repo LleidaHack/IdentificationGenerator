@@ -1,7 +1,9 @@
 
 import os
 
-import Config
+from config.settings import settings
+from config.paths import paths
+from config.constants import BROWN_COLOR
 from models.card import Card
 import tools
 
@@ -10,7 +12,7 @@ from PIL import Image
 class Assistant(object):
 	__ID:int = 1
 	__DATA:str = 'empty'
-	_DATA_FILE:str = Config.DATA_PATH
+	_DATA_FILE:str = paths.data_path
 
 	def __init__(self, id:str, type:str='', name:str=None):
 		self.id = id
@@ -24,7 +26,7 @@ class Assistant(object):
 		self.card.show()
 
 	def save(self):
-		self.card.save(os.path.join(Config.OUT_PATH, str(self.id) + '.png'))
+		self.card.save(os.path.join(paths.out_path, str(self.id) + '.png'))
 
 	def generate_qr(self, crypt_id=False):
 		if self.code:
@@ -33,9 +35,11 @@ class Assistant(object):
 			self.qr = tools.generate_qr(self.id, Card.QR_PIX_SIZE, Card.QR_BORDER_SIZE)
 		self.qr = tools.scale(self.qr, Card.QR_SIZE, False)
 
-	def generate_card(self, rgb_back=(255, 255, 255), template=Config.BAK_PATH_CONTESTANT):
+	def generate_card(self, rgb_back=(255, 255, 255), template=None):
+		if template is None:
+			template = paths.bak_path_contestant
 		self.card = Image.open(template)
-		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.BROWN_COLOR)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, paths.type_font, BROWN_COLOR)
 		if self.type == '':
 			self.smallen()
 
@@ -53,6 +57,6 @@ class Assistant(object):
 		for _ in range(num):
 			res.append(Assistant('A' + str(Assistant.__ID)))
 			Assistant.__ID += 1
-			if Config.TEST:
+			if settings.TEST:
 				break
 		return res

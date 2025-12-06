@@ -16,6 +16,8 @@ dependencies = [
     "reportlab>=4.4.5",
     "fastapi>=0.123.10",
     "uvicorn>=0.38.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [build-system]

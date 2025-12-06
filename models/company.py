@@ -1,6 +1,7 @@
 import base64
 import os
-import Config
+from config.paths import paths
+from config.constants import DARK_FONT_COLOR
 
 import requests
 from io import BytesIO
@@ -23,12 +24,12 @@ class Company(Assistant):
 
 	def generate_card(self, rgb_back=(255, 255, 255)):
 		print("Generating card for company:", self.name)
-		self.card = Image.open(Config.BAK_PATH_EMPRESA)
-		tools.draw_text(self.card, self.type, Card.TYPE_POS, Config.TYPE_FONT, Config.DARK_FONT_COLOR)
+		self.card = Image.open(paths.bak_path_empresa)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, paths.type_font, DARK_FONT_COLOR)
 		if self.type == '':
 			self.smallen()
 		image = tools.translate_image(self.logo)
 		image = tools.scale(image, Card.QR_SIZE)
 		self.card.paste(image, Card.QR_POS)
-		tools.centrate_text_relative(self.card, self.name.strip(),Config.BOLD_NAME_FONT, Card.NAME_POS, Card.QR_SIZE * 3, Config.DARK_FONT_COLOR)
+		tools.centrate_text_relative(self.card, self.name.strip(), paths.bold_name_font, Card.NAME_POS, Card.QR_SIZE * 3, DARK_FONT_COLOR)
 		self.smallen()

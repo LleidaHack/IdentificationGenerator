@@ -1,14 +1,10 @@
 import requests
 import json
 import os
+from config.settings import settings
 
-try:
-    import PrivateConfig
-    BASE_URL = PrivateConfig.BASE_URL
-    SERVICE_TOKEN = PrivateConfig.SERVICE_TOKEN
-except ImportError:
-    BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
-    SERVICE_TOKEN = os.getenv("SERVICE_TOKEN", "dummy_token")
+BASE_URL = settings.BASE_URL
+SERVICE_TOKEN = settings.SERVICE_TOKEN
 
 class APIService:
     def __init__(self):

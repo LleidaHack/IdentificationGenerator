@@ -5,6 +5,7 @@ _out_/
 generated_cards/
 *.pdf
 PrivateConfig.py
+Config.py
 .idea/*
 .vscode/*
 # Docker
