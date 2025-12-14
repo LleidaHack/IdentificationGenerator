@@ -1,26 +1,15 @@
-import Config
-import Model
-import Tools
-from PIL import Image
-import os
+from fastapi import FastAPI
+from routers import contestants, companies, guests, mentors, organizers, volunteers
 
-users = []
-users += Model.Contestant.get_data()
-users += Model.Organizer.get_data()
-users += Model.Volunteer.get_data()
-users += Model.Mentor.get_data()
-users += Model.Company.get_data()
-users += Model.Guest.get_data()
-users += Model.Assistant.get_data()
+app = FastAPI()
 
-Tools.create_dir(Config.OUT_PATH)
-Tools.empty_dir(Config.OUT_PATH)
+app.include_router(contestants.router)
+app.include_router(companies.router)
+app.include_router(guests.router)
+app.include_router(mentors.router)
+app.include_router(organizers.router)
+app.include_router(volunteers.router)
 
-i = 0
-for u in users:
-	u.generate_card()
-	u.save()
-	i+=1
-	# break
-
-print('Generated ' + str(i) + ' cards')
+@app.get("/")
+def read_root():
+    return {"message": "Identification Generator API"}

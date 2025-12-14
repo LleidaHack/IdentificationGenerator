@@ -1,0 +1,37 @@
+# Docker Compose Override Example
+# 
+# Copy this file to docker-compose.override.yml to customize your local setup
+# docker-compose.override.yml is git-ignored and will automatically be used
+# alongside docker-compose.yml when you run docker-compose commands
+#
+# Example customizations:
+
+version: '3.8'
+
+services:
+  api:
+    # Use a different port
+    # ports:
+    #   - "8080:8000"
+    
+    # Add additional environment variables
+    # environment:
+    #   - DEBUG=True
+    #   - LOG_LEVEL=debug
+    
+    # Mount additional volumes
+    # volumes:
+    #   - ./custom_resources:/app/custom_resources
+    
+    # Override the command
+    # command: uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+    
+    # Add resource limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 512M

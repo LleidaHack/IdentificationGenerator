@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Output files
+_out_/
+
+# Documentation
+*.md
+!README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private config files
+PrivateConfig.py
+Config_Sample.py
+
+# Firebase certificates (should be mounted as secrets)
+*.json
+!resources/editions/data_sample.json

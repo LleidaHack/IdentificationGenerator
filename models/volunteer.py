@@ -1,0 +1,41 @@
+import os
+
+from config.settings import settings
+from config.paths import paths
+from config.constants import DARK_FONT_COLOR
+import tools
+from models.assistant import Assistant
+from models.card import Card
+from PIL import Image
+
+class Volunteer(Assistant):
+	__ID:int = 1
+	__LOGO_PATH:str = os.path.join(paths.res_path, 'editions', settings.EDITION, 'images', 'logogran.png')
+	__TYPE:str = 'Voluntari/a'
+	__DATA:str = 'volunteers'
+
+	def __init__(self, name:str):
+		super().__init__('V' + str(Volunteer.__ID), Volunteer.__TYPE, name)
+		Volunteer.__ID += 1
+
+	def generate_card(self, rgb_back=(255, 255, 255)):
+		self.card = Image.open(paths.bak_path_staff)
+		tools.draw_text(self.card, self.type, Card.TYPE_POS, paths.type_font, DARK_FONT_COLOR)
+		if self.type == '':
+			self.smallen()
+		image = Image.open(Volunteer.__LOGO_PATH).convert("RGBA")
+		image = tools.scale(image, Card.QR_SIZE)
+		self.card.paste(image, Card.QR_POS)
+		tools.centrate_text_relative(self.card, " ".join(self.name.split(" ")[:2]).strip(), paths.bold_name_font, Card.NAME_POS, Card.QR_SIZE * 3, DARK_FONT_COLOR)
+		self.smallen()
+
+	@staticmethod
+	def get_data(name=None):
+		res = []
+		data = tools.DataFile.get_content(Volunteer._DATA_FILE, 'JSON')
+		for u in data[Volunteer.__DATA]:
+			if name is None or name == u['name']:
+				res.append(Volunteer(u['name']))
+			if settings.TEST or (name is not None and name == u['name']):
+				break
+		return res

@@ -2,7 +2,15 @@
 resources/*_firebase_cert.json
 resources/editions/*/data.json
 _out_/
+generated_cards/
 *.pdf
+PrivateConfig.py
+Config.py
+.idea/*
+.vscode/*
+# Docker
+docker-compose.override.yml
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

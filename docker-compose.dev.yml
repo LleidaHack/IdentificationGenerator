@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: identification-generator-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for hot-reload
+      - .:/app
+      # Exclude virtual environment
+      - /app/.venv
+      # Mount output directory
+      - ./generated_cards:/app/_out_
+    environment:
+      - EDITION=2025
+      - TEST=True
+    restart: unless-stopped
+    networks:
+      - app-network
+    # Enable debugging
+    stdin_open: true
+    tty: true
+
+networks:
+  app-network:
+    driver: bridge
